@@ -60,6 +60,8 @@ public class EnderscapeCreativeModeTab {
         output.accept(END_TRIAL_SPAWNER);
         output.accept(getEndVaultInstance());
         output.accept(END_CITY_KEY);
+        output.accept(END_CITY_OMINOUS_KEY);
+        output.accept(ELYTRA_KEY);
 
         output.accept(ENDER_PEARL);
         output.accept(SHADOLINE_HELMET);
@@ -598,7 +600,7 @@ public class EnderscapeCreativeModeTab {
             entries.addBefore(IRON_INGOT, SHADOLINE_NUGGET);
             entries.addBefore(QUARTZ, NEBULITE_SHARDS);
             entries.addAfter(SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE, STASIS_ARMOR_TRIM_SMITHING_TEMPLATE);
-            entries.addAfter(OMINOUS_TRIAL_KEY, END_CITY_KEY);
+            entries.addAfter(OMINOUS_TRIAL_KEY, END_CITY_KEY, END_CITY_OMINOUS_KEY, ELYTRA_KEY);
             entries.addBefore(ANGLER_POTTERY_SHERD, CRESCENT_BANNER_PATTERN);
         });
         

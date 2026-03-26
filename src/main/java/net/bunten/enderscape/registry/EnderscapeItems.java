@@ -134,6 +134,8 @@ public class EnderscapeItems {
     public static final Item VOID_TORCH_ITEM = registerItem("void_torch", properties -> new StandingAndWallBlockItem(EnderscapeBlocks.VOID_TORCH, EnderscapeBlocks.VOID_WALL_TORCH, Direction.DOWN, properties), new Properties().useBlockDescriptionPrefix());
 
     public static final Item END_CITY_KEY = registerItem("end_city_key");
+    public static final Item END_CITY_OMINOUS_KEY = registerItem("end_city_ominous_key");
+    public static final Item ELYTRA_KEY = registerItem("elytra_key");
     public static final Item RUBBLE_CHITIN = registerItem("rubble_chitin");
     public static final Item NEBULITE = registerItem("nebulite", new Properties().trimMaterial(EnderscapeTrimMaterials.NEBULITE));
     public static final Item NEBULITE_SHARDS = registerItem("nebulite_shards");
@@ -321,7 +323,7 @@ public class EnderscapeItems {
         CompoundTag configTag = new CompoundTag();
 
         configTag.put("key_item", keyItem);
-        configTag.putString("loot_table", "enderscape:end_city/vault");
+        configTag.putString("loot_table", "enderscape:end_city/vault/normal");
 
         CompoundTag blockEntityData = new CompoundTag();
 

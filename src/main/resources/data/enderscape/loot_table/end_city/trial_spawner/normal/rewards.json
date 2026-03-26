@@ -1,0 +1,28 @@
+{
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:alternatives",
+                    "children": [
+                        {
+                            "type": "minecraft:item",
+                            "name": "enderscape:end_city_key",
+                            "conditions": [
+                                {
+                                    "condition": "minecraft:random_chance",
+                                    "chance": 0.5
+                                }
+                            ]
+                        },
+                        {
+                            "type": "minecraft:loot_table",
+                            "value": "enderscape:end_city/trial_spawner/normal/generic_loot"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

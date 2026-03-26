@@ -1,0 +1,538 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:absinthe",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:amethyst_distillate",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:chacha",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:chernigger",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:coke",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:cumus",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:fish_secret",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:futura_beer",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:gin",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:glintwane",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:god_salvation",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:grog",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:hedgehog",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:jagermeister",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:koshys_whisky",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:medovuha",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:mushroom_gorilka",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:obsidiankvas",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:pink_gin",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:plan_b",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:portwane",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:red_wine_semidry",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:rum",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:sake",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:tequila",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:to_forget",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:vermut",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:vyshnivka",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:warden_medovuha",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:zhyvchyk",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:ipso",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:ogirok",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "brewery:drink_bottle",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "brewery:brew_data": {
+                  "type": "borukvabrewery:rastishka",
+                  "distillation_runs": 3
+                },
+                "brewery:cooking_data": {}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

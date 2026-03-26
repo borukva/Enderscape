@@ -1,0 +1,76 @@
+{
+	"type": "minecraft:equipment",
+	"pools": [
+		{
+			"rolls": 1,
+			"entries": [
+				{
+					"type": "minecraft:loot_table",
+					"value": {
+						"pools": [
+							{
+								"rolls": 1,
+								"entries": [
+									{
+										"type": "minecraft:item",
+										"name": "bartefacts:invisible_helmet"
+									}
+								]
+							},
+							{
+								"rolls": 1,
+								"entries": [
+									{
+										"type": "minecraft:item",
+										"name": "bartefacts:invisible_chestplate"
+									}
+								]
+							}
+						]
+					}
+				}
+			],
+			"functions": [
+				{
+					"function": "minecraft:set_attributes",
+					"modifiers": [
+						{
+							"attribute": "minecraft:attack_damage",
+							"id": "any1",
+							"amount": 9,
+							"operation": "add_value",
+							"slot": "armor"
+						},
+						{
+							"attribute": "minecraft:attack_speed",
+							"id": "any2",
+							"amount": -0.6,
+							"operation": "add_multiplied_base",
+							"slot": "armor"
+						},
+						{
+							"attribute": "minecraft:movement_speed",
+							"id": "any3",
+							"amount": 0.25,
+							"operation": "add_multiplied_base",
+							"slot": "armor"
+						},
+						{
+							"attribute": "minecraft:max_health",
+							"id": "any4",
+							"amount": 10,
+							"operation": "add_value",
+							"slot": "armor"
+						}
+					]
+				},
+				{
+					"function": "minecraft:set_enchantments",
+					"enchantments": {
+						"minecraft:projectile_protection": 4
+					}
+				}
+			]
+		}
+	]
+}

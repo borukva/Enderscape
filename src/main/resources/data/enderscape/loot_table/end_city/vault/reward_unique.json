@@ -1,0 +1,79 @@
+{
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 40
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:mirror",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spire_armor_trim_smithing_template",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:music_disc_glare",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:crescent_banner_pattern",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:stasis_armor_trim_smithing_template",
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:enchanted_golden_apple",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spire_armor_trim_smithing_template",
+          "weight": 7
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:vex_armor_trim_smithing_template",
+          "weight": 7
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:eye_armor_trim_smithing_template",
+          "weight": 7
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "borukva:ingredients",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ],
+          "weight": 10
+        }
+      ]
+    }
+  ]
+}

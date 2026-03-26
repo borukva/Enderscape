@@ -1,0 +1,65 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:beef_sandwich",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:cooked_hoglin_meat",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:beef_salad",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:shawarma",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:cooked_squid_ring",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:cooked_beef_barbecue",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:fungus_stew",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:chorus_fruits_with_ender_jam",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:ender_jam_stew_with_chorus_fruit",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:ender_pie",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:golden_chorus_fruit",
+          "weight": 3
+        }
+      ]
+    }
+  ]
+}

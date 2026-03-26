@@ -1,0 +1,75 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:apple_candy",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:honey_candy",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:pumpkin_candy",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:chocolate_ice_cream",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:ice_cream",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:rotten_soup",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:chocolate_bar",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:salo",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:cheese",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:tomato_sandwich",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:salmon_maki",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:salmon_uramaki",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "borukva-food:chorus_fruit_in_chocolate_on_a_stick",
+          "weight": 4
+        }
+      ]
+    }
+  ]
+}

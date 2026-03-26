@@ -1,0 +1,27 @@
+{
+	"type": "minecraft:equipment",
+	"pools": [
+		{
+			"rolls": 1,
+			"bonus_rolls": 0,
+			"entries": [
+				{
+					"type": "minecraft:item",
+					"name": "bartefacts:enderite_sword"
+				},
+				{
+					"type": "minecraft:item",
+					"name": "bartefacts:enderite_axe"
+				}
+			],
+			"functions": [
+				{
+					"function": "minecraft:set_enchantments",
+					"enchantments": {
+						"minecraft:sharpness": 5
+					}
+				}
+			]
+		}
+	]
+}

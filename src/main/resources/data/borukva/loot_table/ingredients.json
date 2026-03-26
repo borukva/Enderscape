@@ -1,0 +1,40 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:tempered_steel",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:nephrite_shard",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:ruby",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:soul_fragment",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:holy_cloth",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:enderite_shard",
+          "weight": 3
+        }
+      ]
+    }
+  ]
+}

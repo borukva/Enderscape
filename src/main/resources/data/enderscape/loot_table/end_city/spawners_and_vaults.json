@@ -1,0 +1,229 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:end_trial_spawner",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "Elytra Key Melee",
+                "color": "#9d2aea",
+                "italic": false
+              }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:block_entity_data": {
+                  "id": "minecraft:trial_spawner",
+                  "normal_config": "enderscape:normal/elytra_key_melee",
+                  "ominous_config": "enderscape:ominous/elytra_key_melee"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:end_trial_spawner",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "Elytra Key Ranged",
+                "color": "#9d2aea",
+                "italic": false
+              }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:block_entity_data": {
+                  "id": "minecraft:trial_spawner",
+                  "normal_config": "enderscape:normal/elytra_key_ranged",
+                  "ominous_config": "enderscape:ominous/elytra_key_ranged"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:end_trial_spawner",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "End City Key Melee",
+                "color": "#9d2aea",
+                "italic": false
+              }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:block_entity_data": {
+                  "id": "minecraft:trial_spawner",
+                  "normal_config": "enderscape:normal/end_city_key_melee",
+                  "ominous_config": "enderscape:ominous/end_city_key_melee"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:end_trial_spawner",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "End City Key Ranged",
+                "color": "#9d2aea",
+                "italic": false
+              }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:block_entity_data": {
+                  "id": "minecraft:trial_spawner",
+                  "normal_config": "enderscape:normal/end_city_key_ranged",
+                  "ominous_config": "enderscape:ominous/end_city_key_ranged"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:end_vault",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "End City Key",
+                "color": "#9d2aea",
+                "italic": false
+              }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:block_entity_data": {
+                  "id": "minecraft:vault",
+                  "config": {
+                    "loot_table": "enderscape:end_city/vault/normal",
+                    "key_item": {
+                      "count": 1,
+                      "id": "enderscape:end_city_key"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:end_vault",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "Ominous End City Key",
+                "color": "#9d2aea",
+                "italic": false
+              }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:block_entity_data": {
+                  "id": "minecraft:vault",
+                  "config": {
+                    "loot_table": "enderscape:end_city/vault/ominous",
+                    "key_item": {
+                      "count": 1,
+                      "id": "enderscape:end_city_ominous_key"
+                    }
+                  }
+                },
+                "minecraft:block_state": {
+                  "ominous": "true"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:end_vault",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "text": "Elytra Key",
+                "color": "#9d2aea",
+                "italic": false
+              }
+            },
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:block_entity_data": {
+                  "id": "minecraft:vault",
+                  "config": {
+                    "loot_table": "enderscape:end_city/vault/elytra",
+                    "key_item": {
+                      "count": 1,
+                      "id": "enderscape:elytra_key"
+                    }
+                  }
+                },
+                "minecraft:block_state": {
+                  "ominous": "true"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

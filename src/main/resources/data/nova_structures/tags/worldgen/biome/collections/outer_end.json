@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:has_structure/end_city",
+    {
+      "id": "#enderscape:has_structure/gateways",
+      "required": false
+    }
+  ]
+}

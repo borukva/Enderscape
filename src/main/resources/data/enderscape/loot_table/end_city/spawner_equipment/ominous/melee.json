@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:equipment",
+	"pools": [
+		{
+			"rolls": 1,
+			"bonus_rolls": 0,
+			"entries": [
+				{
+					"type": "minecraft:loot_table",
+					"value": "enderscape:end_city/spawner_equipment/ominous/weapon"
+				}
+			]
+		},
+		{
+			"rolls": 1,
+			"bonus_rolls": 0,
+			"entries": [
+				{
+					"type": "minecraft:loot_table",
+					"value": "enderscape:end_city/spawner_equipment/ominous/armor"
+				}
+			]
+		}
+	]
+}
