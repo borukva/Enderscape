@@ -14,6 +14,7 @@ public class EnderscapeEntityTags {
     public static final TagKey<EntityType<?>> EXEMPT_FROM_MAGNIA_ATTRACTOR_ABUSE_COST = register("exempt_from_magnia_attractor_abuse_cost");
     public static final TagKey<EntityType<?>> PULLED_BY_MAGNIA_ATTRACTOR = register("pulled_by_magnia_attractor");
     public static final TagKey<EntityType<?>> RUBBLEMITE_HOSTILE_TOWARDS = register("rubblemite_hostile_towards");
+    public static final TagKey<EntityType<?>> WRAITH_HOSTILE_TOWARDS = register("wraith_hostile_towards");
 
     private static TagKey<EntityType<?>> register(String name) {
         return TagKey.create(Registries.ENTITY_TYPE, Enderscape.id(name));

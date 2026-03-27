@@ -5,6 +5,7 @@ import net.bunten.enderscape.client.entity.drifter.DrifterModel;
 import net.bunten.enderscape.client.entity.rubblemite.RubblemiteModel;
 import net.bunten.enderscape.client.entity.rustle.BabyRustleModel;
 import net.bunten.enderscape.client.entity.rustle.RustleModel;
+import net.bunten.enderscape.client.entity.wraith.WraithModel;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 
@@ -17,6 +18,7 @@ public class EnderscapeModelLayers {
 
     public static final ModelLayerLocation RUSTLE = registerModelLayer("rustle");
     public static final ModelLayerLocation BABY_RUSTLE = registerModelLayer("baby_rustle");
+    public static final ModelLayerLocation WRAITH = registerModelLayer("wraith");
 
     static {
         EntityModelLayerRegistry.registerModelLayer(RUBBLEMITE, RubblemiteModel::createLayer);
@@ -26,6 +28,7 @@ public class EnderscapeModelLayers {
 
         EntityModelLayerRegistry.registerModelLayer(RUSTLE, RustleModel::createLayer);
         EntityModelLayerRegistry.registerModelLayer(BABY_RUSTLE, BabyRustleModel::createLayer);
+        EntityModelLayerRegistry.registerModelLayer(WRAITH, WraithModel::createLayer);
     }
 
     private static ModelLayerLocation registerModelLayer(String name) {

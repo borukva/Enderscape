@@ -8986,5 +8986,26 @@
                 "stream": true
             }
         ]
+    },
+    "entity.ender_aggro": {
+        "sounds": [{"name": "enderscape:entity/wraith/ender_aggro", "type": "file"}]
+    },
+    "entity.ender_idle_1": {
+        "sounds": [{"name": "enderscape:entity/wraith/ender_idle_1", "type": "file"}]
+    },
+    "entity.ender_idle_2": {
+        "sounds": [{"name": "enderscape:entity/wraith/ender_idle_2", "type": "file"}]
+    },
+    "entity.ender_idle_3": {
+        "sounds": [{"name": "enderscape:entity/wraith/ender_idle_3", "type": "file"}]
+    },
+    "entity.end_wraith_rightslash": {
+        "sounds": [{"name": "enderscape:entity/wraith/end_wraith_rightslash", "type": "file"}]
+    },
+    "entity.end_wraith_leftslash": {
+        "sounds": [{"name": "enderscape:entity/wraith/end_wraith_leftslash", "type": "file"}]
+    },
+    "entity.end_wraith_spinslash": {
+        "sounds": [{"name": "enderscape:entity/wraith/end_wraith_spinslash", "type": "file"}]
     }
 }

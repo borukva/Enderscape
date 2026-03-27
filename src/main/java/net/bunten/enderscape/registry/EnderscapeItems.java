@@ -99,6 +99,7 @@ public class EnderscapeItems {
 
     public static final Item DRIFTER_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.DRIFTER);
     public static final Item RUBBLEMITE_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.RUBBLEMITE);
+    public static final Item WRAITH_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.WRAITH);
     public static final Item RUSTLE_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.RUSTLE);
 
     public static final Item RUSTLE_BUCKET = registerItem("rustle_bucket", RustleBucketItem::new, new Item.Properties().stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY));

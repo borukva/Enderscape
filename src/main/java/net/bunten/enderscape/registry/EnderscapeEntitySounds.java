@@ -41,6 +41,13 @@ public class EnderscapeEntitySounds {
     public static final SoundEvent RUSTLE_SLEEPING_BUBBLE_POP = register("rustle.sleeping_bubble_pop");
     public static final SoundEvent RUSTLE_SNORE = register("rustle.snore");
     public static final SoundEvent SHULKER_BULLET_LOOP = register("shulker_bullet.loop");
+    public static final SoundEvent WRAITH_AGGRO = register("ender_aggro");
+    public static final SoundEvent WRAITH_IDLE_1 = register("ender_idle_1");
+    public static final SoundEvent WRAITH_IDLE_2 = register("ender_idle_2");
+    public static final SoundEvent WRAITH_IDLE_3 = register("ender_idle_3");
+    public static final SoundEvent WRAITH_RIGHT_SLASH = register("end_wraith_rightslash");
+    public static final SoundEvent WRAITH_LEFT_SLASH = register("end_wraith_leftslash");
+    public static final SoundEvent WRAITH_SPIN_SLASH = register("end_wraith_spinslash");
 
     private static SoundEvent register(String name) {
         return Enderscape.registerSoundEvent("entity." + name);
