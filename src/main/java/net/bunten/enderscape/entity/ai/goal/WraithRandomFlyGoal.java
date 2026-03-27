@@ -29,6 +29,9 @@ public class WraithRandomFlyGoal extends Goal {
 
     @Override
     public void tick() {
+        if (!(wraith.level() instanceof net.minecraft.server.level.ServerLevel level)) {
+            return;
+        }
         BlockPos pos = wraith.blockPosition();
         for (int i = 0; i < 3; i++) {
             BlockPos target = pos.offset(
@@ -36,7 +39,7 @@ public class WraithRandomFlyGoal extends Goal {
                     wraith.getRandom().nextInt(11) - 5,
                     wraith.getRandom().nextInt(15) - 7
             );
-            if (wraith.level().isEmptyBlock(target)) {
+            if (level.isEmptyBlock(target)) {
                 wraith.getMoveControl().setWantedPosition(
                         target.getX() + 0.5,
                         target.getY() + 0.5,

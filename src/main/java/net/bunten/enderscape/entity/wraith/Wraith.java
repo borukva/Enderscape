@@ -329,22 +329,23 @@ public class Wraith extends Monster {
         return teleport(x, y, z);
     }
 
-    @SuppressWarnings("deprecation")
     private boolean teleport(double x, double y, double z) {
         // randomTeleport() ALWAYS requires solid ground - use direct teleportTo for air
+        Level level = level();
         BlockPos pos = BlockPos.containing(x, y, z);
-        BlockState state = level().getBlockState(pos);
+        BlockState state = level.getBlockState(pos);
 
         // Wraith can teleport to air - check that position is passable
-        if (!state.blocksMotion() && !state.getFluidState().is(FluidTags.WATER)) {
+        if (!state.isCollisionShapeFullBlock(level, pos) && !state.getFluidState().is(FluidTags.WATER)) {
             return tryTeleportTo(x, y, z);
         }
         // Fallback: try position above if inside block
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(x, y, z);
-        while (mutable.getY() < level().getMaxY() && level().getBlockState(mutable).blocksMotion()) {
+        while (mutable.getY() < level.getMaxY() && level.getBlockState(mutable).isCollisionShapeFullBlock(level, mutable)) {
             mutable.move(Direction.UP);
         }
-        if (!level().getBlockState(mutable).blocksMotion() && !level().getBlockState(mutable).getFluidState().is(FluidTags.WATER)) {
+        BlockState fallbackState = level.getBlockState(mutable);
+        if (!fallbackState.isCollisionShapeFullBlock(level, mutable) && !fallbackState.getFluidState().is(FluidTags.WATER)) {
             return tryTeleportTo(mutable.getX() + 0.5, mutable.getY(), mutable.getZ() + 0.5);
         }
         return false;
@@ -353,12 +354,13 @@ public class Wraith extends Monster {
     private boolean tryTeleportTo(double x, double y, double z) {
         Vec3 oldPos = position();
         teleportTo(x, y, z);
-        if (level().noCollision(this) && !level().containsAnyLiquid(getBoundingBox())) {
+        Level level = level();
+        if (level.noCollision(this) && !level.containsAnyLiquid(getBoundingBox())) {
             getNavigation().stop();
             clearMoveTarget();
-            level().gameEvent(GameEvent.TELEPORT, oldPos, GameEvent.Context.of(this));
+            level.gameEvent(GameEvent.TELEPORT, oldPos, GameEvent.Context.of(this));
             if (!isSilent()) {
-                level().playSound(null, xo, yo, zo, SoundEvents.ENDERMAN_TELEPORT, getSoundSource(), 1, 1);
+                level.playSound(null, xo, yo, zo, SoundEvents.ENDERMAN_TELEPORT, getSoundSource(), 1, 1);
                 playSound(SoundEvents.ENDERMAN_TELEPORT, 1, 1);
             }
             return true;

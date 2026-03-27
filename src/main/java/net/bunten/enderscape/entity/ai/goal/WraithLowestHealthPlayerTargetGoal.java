@@ -1,6 +1,7 @@
 package net.bunten.enderscape.entity.ai.goal;
 
 import net.bunten.enderscape.entity.wraith.Wraith;
+import net.bunten.enderscape.registry.tag.EnderscapeEntityTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -24,13 +25,13 @@ public class WraithLowestHealthPlayerTargetGoal extends TargetGoal {
 
     @Override
     public boolean canUse() {
-        if (!(wraith.level() instanceof ServerLevel)) {
+        if (!(wraith.level() instanceof ServerLevel serverLevel)) {
             return false;
         }
 
         double followRange = wraith.getAttributeValue(Attributes.FOLLOW_RANGE);
         AABB range = wraith.getBoundingBox().inflate(followRange, followRange * 0.5, followRange);
-        List<Player> players = wraith.level().getEntitiesOfClass(Player.class, range, this::isCandidate);
+        List<Player> players = serverLevel.getEntitiesOfClass(Player.class, range, this::isCandidate);
         target = players.stream()
                 .min(Comparator
                         .comparingDouble(Player::getHealth)
@@ -53,6 +54,9 @@ public class WraithLowestHealthPlayerTargetGoal extends TargetGoal {
     }
 
     private boolean isCandidate(Player player) {
-        return player.isAlive() && !player.isSpectator() && !player.isCreative();
+        return player.isAlive()
+                && !player.isSpectator()
+                && !player.isCreative()
+                && player.getType().is(EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS);
     }
 }

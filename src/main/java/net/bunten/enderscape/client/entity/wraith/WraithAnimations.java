@@ -1341,6 +1341,7 @@ public class WraithAnimations {
 		))
 		.build();
 
+	@SuppressWarnings("unused")
 	public static final AnimationDefinition SPAWN = AnimationDefinition.Builder.withLength(2.0F)
 		.addAnimation("body", new AnimationChannel(AnimationChannel.Targets.ROTATION, 
 			new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
@@ -1575,6 +1576,7 @@ public class WraithAnimations {
 		))
 		.build();
 
+	@SuppressWarnings("unused")
 	public static final AnimationDefinition DEATH = AnimationDefinition.Builder.withLength(1.5F)
 		.addAnimation("vfx", new AnimationChannel(AnimationChannel.Targets.SCALE, 
 			new Keyframe(0.0F, KeyframeAnimations.scaleVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)

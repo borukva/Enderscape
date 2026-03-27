@@ -12,17 +12,6 @@ import net.minecraft.util.Mth;
 @Environment(EnvType.CLIENT)
 public class WraithModel extends EntityModel<WraithRenderState> {
     private final ModelPart wraith;
-    private final ModelPart vfx;
-    private final ModelPart body_rotation;
-    private final ModelPart body_root;
-    private final ModelPart body;
-    private final ModelPart torso;
-    private final ModelPart upper_torso;
-    private final ModelPart h_head;
-    private final ModelPart left_arm;
-    private final ModelPart right_arm;
-    private final ModelPart tail;
-    private final ModelPart tail2;
 
     private final KeyframeAnimation idleAnimation;
     private final KeyframeAnimation walkAnimation;
@@ -33,17 +22,6 @@ public class WraithModel extends EntityModel<WraithRenderState> {
     public WraithModel(ModelPart root) {
         super(root);
         this.wraith = root.getChild("wraith");
-        this.vfx = this.wraith.getChild("vfx");
-        this.body_rotation = this.wraith.getChild("body_rotation");
-        this.body_root = this.body_rotation.getChild("body_root");
-        this.body = this.body_root.getChild("body");
-        this.torso = this.body.getChild("torso");
-        this.upper_torso = this.torso.getChild("upper_torso");
-        this.h_head = this.upper_torso.getChild("h_head");
-        this.left_arm = this.upper_torso.getChild("left_arm");
-        this.right_arm = this.upper_torso.getChild("right_arm");
-        this.tail = this.torso.getChild("tail");
-        this.tail2 = this.tail.getChild("tail2");
 
         idleAnimation = WraithAnimations.IDLE.bake(root);
         walkAnimation = WraithAnimations.WALK.bake(root);
