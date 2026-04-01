@@ -100,6 +100,7 @@ public class EnderscapeItems {
     public static final Item DRIFTER_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.DRIFTER);
     public static final Item RUBBLEMITE_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.RUBBLEMITE);
     public static final Item WRAITH_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.WRAITH);
+    public static final Item ENDERLING_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.ENDERLING);
     public static final Item RUSTLE_SPAWN_EGG = registerSpawnEgg(EnderscapeEntities.RUSTLE);
 
     public static final Item RUSTLE_BUCKET = registerItem("rustle_bucket", RustleBucketItem::new, new Item.Properties().stacksTo(1).component(DataComponents.BUCKET_ENTITY_DATA, CustomData.EMPTY));
@@ -202,7 +203,7 @@ public class EnderscapeItems {
                     DataComponents.TOOL,
                     new Tool(
                             List.of(
-                                    Tool.Rule.minesAndDrops(HolderSet.direct(Blocks.COBWEB.builtInRegistryHolder()), 7.5F)
+                                    Tool.Rule.minesAndDrops(HolderSet.direct(BuiltInRegistries.BLOCK.wrapAsHolder(Blocks.COBWEB)), 7.5F)
                             ),
                             1,
                             2,
@@ -289,7 +290,8 @@ public class EnderscapeItems {
     }
 
     public static Item registerBlock(Block block, BiFunction<Block, Item.Properties, Item> biFunction, Item.Properties properties) {
-        return registerItem(blockIdToItemId(block.builtInRegistryHolder().key()), propertiesx -> biFunction.apply(block, propertiesx), properties.useBlockDescriptionPrefix());
+        ResourceKey<Block> blockKey = BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow();
+        return registerItem(blockIdToItemId(blockKey), propertiesx -> biFunction.apply(block, propertiesx), properties.useBlockDescriptionPrefix());
     }
 
     public static Item registerItem(String string, Function<Item.Properties, Item> function, Item.Properties properties) {
@@ -338,21 +340,30 @@ public class EnderscapeItems {
 
     public static ItemStack getEndCityBannerInstance(HolderGetter<BannerPattern> getter) {
         ItemStack stack = new ItemStack(MAGENTA_BANNER);
-        stack.set(DataComponents.BANNER_PATTERNS, new BannerPatternLayers.Builder()
-                .addIfRegistered(getter, BannerPatterns.STRIPE_SMALL, DyeColor.BLACK)
-                .addIfRegistered(getter, BannerPatterns.STRIPE_TOP, DyeColor.MAGENTA)
-                .addIfRegistered(getter, BannerPatterns.STRIPE_BOTTOM, DyeColor.MAGENTA)
-                .addIfRegistered(getter, BannerPatterns.STRIPE_MIDDLE, DyeColor.MAGENTA)
-                .addIfRegistered(getter, BannerPatterns.FLOWER, DyeColor.MAGENTA)
-                .addIfRegistered(getter, BannerPatterns.RHOMBUS_MIDDLE, DyeColor.MAGENTA)
-                .addIfRegistered(getter, BannerPatterns.TRIANGLE_BOTTOM, DyeColor.BLACK)
-                .addIfRegistered(getter, BannerPatterns.TRIANGLE_TOP, DyeColor.BLACK)
-                .addIfRegistered(getter, BannerPatterns.CIRCLE_MIDDLE, DyeColor.BLACK)
-                .addIfRegistered(getter, EnderscapeBannerPatterns.CRESCENT, DyeColor.MAGENTA)
-                .build());
+        BannerPatternLayers.Builder layers = new BannerPatternLayers.Builder();
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.STRIPE_SMALL, DyeColor.BLACK);
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.STRIPE_TOP, DyeColor.MAGENTA);
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.STRIPE_BOTTOM, DyeColor.MAGENTA);
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.STRIPE_MIDDLE, DyeColor.MAGENTA);
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.FLOWER, DyeColor.MAGENTA);
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.RHOMBUS_MIDDLE, DyeColor.MAGENTA);
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.TRIANGLE_BOTTOM, DyeColor.BLACK);
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.TRIANGLE_TOP, DyeColor.BLACK);
+        addBannerLayerIfRegistered(layers, getter, BannerPatterns.CIRCLE_MIDDLE, DyeColor.BLACK);
+        addBannerLayerIfRegistered(layers, getter, EnderscapeBannerPatterns.CRESCENT, DyeColor.MAGENTA);
+        stack.set(DataComponents.BANNER_PATTERNS, layers.build());
         stack.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.BANNER_PATTERNS, true));
         stack.set(DataComponents.ITEM_NAME, Component.translatable("block.enderscape.end_city_banner"));
         stack.set(DataComponents.RARITY, Rarity.UNCOMMON);
         return stack;
+    }
+
+    private static void addBannerLayerIfRegistered(
+            BannerPatternLayers.Builder builder,
+            HolderGetter<BannerPattern> getter,
+            ResourceKey<BannerPattern> patternKey,
+            DyeColor color
+    ) {
+        getter.get(patternKey).ifPresent(holder -> builder.add(holder, color));
     }
 }

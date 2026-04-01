@@ -2,6 +2,7 @@ package net.bunten.enderscape.client.registry;
 
 import net.bunten.enderscape.Enderscape;
 import net.bunten.enderscape.client.entity.drifter.DrifterModel;
+import net.bunten.enderscape.client.entity.enderling.EnderlingModel;
 import net.bunten.enderscape.client.entity.rubblemite.RubblemiteModel;
 import net.bunten.enderscape.client.entity.rustle.BabyRustleModel;
 import net.bunten.enderscape.client.entity.rustle.RustleModel;
@@ -19,6 +20,7 @@ public class EnderscapeModelLayers {
     public static final ModelLayerLocation RUSTLE = registerModelLayer("rustle");
     public static final ModelLayerLocation BABY_RUSTLE = registerModelLayer("baby_rustle");
     public static final ModelLayerLocation WRAITH = registerModelLayer("wraith");
+    public static final ModelLayerLocation ENDERLING = registerModelLayer("enderling");
 
     static {
         EntityModelLayerRegistry.registerModelLayer(RUBBLEMITE, RubblemiteModel::createLayer);
@@ -29,6 +31,7 @@ public class EnderscapeModelLayers {
         EntityModelLayerRegistry.registerModelLayer(RUSTLE, RustleModel::createLayer);
         EntityModelLayerRegistry.registerModelLayer(BABY_RUSTLE, BabyRustleModel::createLayer);
         EntityModelLayerRegistry.registerModelLayer(WRAITH, WraithModel::createLayer);
+        EntityModelLayerRegistry.registerModelLayer(ENDERLING, EnderlingModel::createLayer);
     }
 
     private static ModelLayerLocation registerModelLayer(String name) {

@@ -48,6 +48,10 @@ public class EnderscapeEntitySounds {
     public static final SoundEvent WRAITH_RIGHT_SLASH = register("end_wraith_rightslash");
     public static final SoundEvent WRAITH_LEFT_SLASH = register("end_wraith_leftslash");
     public static final SoundEvent WRAITH_SPIN_SLASH = register("end_wraith_spinslash");
+    public static final SoundEvent ENDERLING_AMBIENT = register("enderling.ambient");
+    public static final SoundEvent ENDERLING_AGGRO = register("enderling.aggro");
+    public static final SoundEvent ENDERLING_ATTACK = register("enderling.attack");
+    public static final SoundEvent ENDERLING_DEATH = register("enderling.death");
 
     private static SoundEvent register(String name) {
         return Enderscape.registerSoundEvent("entity." + name);
