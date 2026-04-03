@@ -250,8 +250,7 @@ public class EnderscapeBlockLootProvider extends FabricBlockLootTableProvider {
                         block,
                         LootItem.lootTableItem(NEBULITE_SHARDS)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
-                                .apply(ApplyBonusCount.addOreBonusCount(enchantment.getOrThrow(Enchantments.FORTUNE)))
-                                .apply(LimitCount.limitCount(IntRange.upperBound(8)))
+                                .apply(LimitCount.limitCount(IntRange.upperBound(3)))
                 )
         );
 
