@@ -84,6 +84,7 @@ public class EnderscapeEntities {
         FabricDefaultAttributeRegistry.register(DRIFTER, Drifter.createAttributes());
         FabricDefaultAttributeRegistry.register(RUBBLEMITE, Rubblemite.createAttributes());
         FabricDefaultAttributeRegistry.register(WRAITH, Wraith.createAttributes());
+        FabricDefaultAttributeRegistry.register(ENDERLING, Enderling.createAttributes());
         FabricDefaultAttributeRegistry.register(RUSTLE, Rustle.createAttributes());
 
         FabricTrackedDataRegistry.register(Enderscape.id("rubblemite_state"), RUBBLEMITE_STATE);
