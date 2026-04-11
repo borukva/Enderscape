@@ -17,21 +17,7 @@
           "loot_table": "enderscape:end_city/spawner_equipment/ominous/melee"
         },
         "entity": {
-          "id": "minecraft:skeleton",
-          "active_effects": [
-            {
-              "id": "minecraft:fire_resistance",
-              "duration": -1,
-              "show_particles": 0
-            },
-            {
-              "id": "minecraft:instant_damage",
-              "duration": 3,
-              "show_particles": 0,
-              "amplifier": 3
-            }
-          ],
-          "DeathLootTable": "draft:draft",
+          "id": "enderscape:enderling",
           "Tags": [ "enderscape.end_city" ]
         }
       },
@@ -44,25 +30,11 @@
           "loot_table": "enderscape:end_city/spawner_equipment/ominous/melee"
         },
         "entity": {
-          "id": "minecraft:zombie",
-          "active_effects": [
-            {
-              "id": "minecraft:fire_resistance",
-              "duration": -1,
-              "show_particles": 0
-            },
-            {
-              "id": "minecraft:instant_damage",
-              "duration": 3,
-              "show_particles": 0,
-              "amplifier": 3
-            }
-          ],
-          "DeathLootTable": "draft:draft",
+          "id": "enderscape:wraith",
           "Tags": [ "enderscape.end_city" ]
         }
       },
-      "weight": 1
+      "weight": 2
     }
   ],
   "items_to_drop_when_ominous": "enderscape:end_city/trial_spawner/ominous/item_spawn"

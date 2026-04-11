@@ -7,6 +7,7 @@ import net.bunten.enderscape.entity.ai.goal.WraithLowestHealthPlayerTargetGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithSlashAttackGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithCombatFlyGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithSpinSlashGoal;
+import net.bunten.enderscape.entity.TeleportDodgeMechanics;
 import net.bunten.enderscape.entity.ai.goal.WraithTeleportGoal;
 import net.bunten.enderscape.registry.EnderscapeEntities;
 import net.bunten.enderscape.registry.EnderscapeEntitySounds;
@@ -57,6 +58,8 @@ public class Wraith extends Monster {
     public final AnimationState spinSlashAnimationState = new AnimationState();
 
     private int teleportCooldown;
+    /** Consecutive successful hurt-dodge teleports without a dodge cooldown being applied. */
+    private int consecutiveDodgeTeleports;
     private int attackCooldown;
     private int attackAnimationTicks;
     private int pendingDamageTicks;
@@ -79,6 +82,9 @@ public class Wraith extends Monster {
 
     public void setTeleportCooldown(int ticks) {
         this.teleportCooldown = ticks;
+        if (ticks > 0) {
+            consecutiveDodgeTeleports = 0;
+        }
     }
 
     public int getAttackCooldown() {
@@ -265,7 +271,10 @@ public class Wraith extends Monster {
         if (teleportCooldown <= 0) {
             for (int i = 0; i < 64; i++) {
                 if (teleportOnCircleWithRadius(WraithCombatFlyGoal.ORBIT_RADIUS_MAX)) {
-                    setTeleportCooldown(20);
+                    consecutiveDodgeTeleports = Math.min(3, consecutiveDodgeTeleports + 1);
+                    if (TeleportDodgeMechanics.shouldApplyCooldownAfterDodge(random, consecutiveDodgeTeleports)) {
+                        setTeleportCooldown(TeleportDodgeMechanics.DODGE_COOLDOWN_TICKS);
+                    }
                     return true;
                 }
             }

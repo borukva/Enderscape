@@ -1,15 +1,16 @@
 package net.bunten.enderscape.entity.ai.goal;
 
+import net.bunten.enderscape.entity.TeleportDodgeMechanics;
+import net.bunten.enderscape.entity.wraith.Wraith;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.bunten.enderscape.entity.wraith.Wraith;
 
 import java.util.EnumSet;
 
 public class WraithTeleportGoal extends Goal {
 
     private static final double TELEPORT_DISTANCE_SQ = 12 * 12;
-    private static final int COOLDOWN_TICKS = 40;
+    private static final int COOLDOWN_TICKS = TeleportDodgeMechanics.DODGE_COOLDOWN_TICKS;
 
     private final Wraith wraith;
 

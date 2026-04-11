@@ -6,18 +6,8 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "bartefacts:tempered_steel",
-          "weight": 1
-        },
-        {
-          "type": "minecraft:item",
-          "name": "bartefacts:nephrite_shard",
-          "weight": 1
-        },
-        {
-          "type": "minecraft:item",
-          "name": "bartefacts:ruby",
-          "weight": 1
+          "name": "bartefacts:research_paper",
+          "weight": 3
         },
         {
           "type": "minecraft:item",
@@ -31,8 +21,23 @@
         },
         {
           "type": "minecraft:item",
-          "name": "bartefacts:enderite_shard",
-          "weight": 3
+          "name": "bartefacts:lost_platinum",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:purified_prismarine",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:hibiscus_petal",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:flowering_essence",
+          "weight": 1
         }
       ]
     }

@@ -11,6 +11,8 @@ import java.util.EnumSet;
 public class EnderlingSlashAttackGoal extends Goal {
     /** Small extra window so adjacent-height targets do not deadlock chase/attack transitions. */
     private static final double START_RANGE_BUFFER = 0.35;
+    /** Horizontal reach for the damage frame during slash (start range still uses {@link #getAttackReachSqr}). */
+    private static final double SLASH_DAMAGE_HORIZONTAL_REACH = 3.0;
     private static final double VERTICAL_TOLERANCE = 2.0;
     private static final int SLASH_DURATION_TICKS = 30;
     private static final int DAMAGE_AT_TICK = 10;
@@ -80,15 +82,15 @@ public class EnderlingSlashAttackGoal extends Goal {
         enderling.getLookControl().setLookAt(target, 35.0F, 35.0F);
         enderling.getNavigation().stop();
 
-        if (!dealtDamage && slashTicks >= DAMAGE_AT_TICK && isInMeleeRange(target)) {
+        if (!dealtDamage && slashTicks >= DAMAGE_AT_TICK && isInSlashDamageRange(target)) {
             if (enderling.level() instanceof ServerLevel serverLevel && enderling.doHurtTarget(serverLevel, target)) {
                 dealtDamage = true;
             }
         }
     }
 
-    private boolean isInMeleeRange(LivingEntity target) {
-        return isWithinHorizontalRange(target, getAttackReachSqr(target))
+    private boolean isInSlashDamageRange(LivingEntity target) {
+        return isWithinHorizontalRange(target, getSlashDamageReachSqr(target))
                 && Math.abs(target.getY() - enderling.getY()) <= VERTICAL_TOLERANCE;
     }
 
@@ -108,6 +110,13 @@ public class EnderlingSlashAttackGoal extends Goal {
         double selfWidth = enderling.getBbWidth();
         double targetWidth = target.getBbWidth();
         double reach = 1.35 + (selfWidth + targetWidth) * 0.5;
+        return reach * reach;
+    }
+
+    private double getSlashDamageReachSqr(LivingEntity target) {
+        double selfWidth = enderling.getBbWidth();
+        double targetWidth = target.getBbWidth();
+        double reach = SLASH_DAMAGE_HORIZONTAL_REACH + (selfWidth + targetWidth) * 0.5;
         return reach * reach;
     }
 }

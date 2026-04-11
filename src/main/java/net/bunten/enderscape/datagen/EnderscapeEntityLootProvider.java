@@ -1,12 +1,9 @@
 package net.bunten.enderscape.datagen;
 
-import net.bunten.enderscape.entity.rubblemite.RubblemiteVariant;
 import net.bunten.enderscape.registry.EnderscapeBlocks;
 import net.bunten.enderscape.registry.EnderscapeEntityLootTables;
-import net.bunten.enderscape.registry.EnderscapeRegistries;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -30,6 +27,7 @@ import java.util.function.BiConsumer;
 
 import static net.bunten.enderscape.registry.EnderscapeEntities.*;
 import static net.bunten.enderscape.registry.EnderscapeEntityLootTables.*;
+import static net.bunten.enderscape.registry.EnderscapeItems.NEBULITE_SHARDS;
 import static net.bunten.enderscape.registry.EnderscapeItems.RUBBLE_CHITIN;
 
 public class EnderscapeEntityLootProvider extends SimpleFabricLootTableProvider {
@@ -44,8 +42,6 @@ public class EnderscapeEntityLootProvider extends SimpleFabricLootTableProvider 
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
         try {
-            HolderGetter<RubblemiteVariant> variants = lookup.get().lookupOrThrow(EnderscapeRegistries.RUBBLEMITE_VARIANT);
-
             consumer.accept(
                     getLootTable(DRIFTER),
                     LootTable.lootTable()
@@ -78,6 +74,18 @@ public class EnderscapeEntityLootProvider extends SimpleFabricLootTableProvider 
             );
 
             consumer.accept(
+                    getLootTable(WRAITH),
+                    LootTable.lootTable()
+                            .withPool(nebuliteShardsBonusPool())
+            );
+
+            consumer.accept(
+                    getLootTable(ENDERLING),
+                    LootTable.lootTable()
+                            .withPool(nebuliteShardsBonusPool())
+            );
+
+            consumer.accept(
                     EnderscapeEntityLootTables.SHEARING_RUSTLE,
                     LootTable.lootTable()
                             .withPool(
@@ -90,6 +98,19 @@ public class EnderscapeEntityLootProvider extends SimpleFabricLootTableProvider 
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /** Wraith and Enderling only; only when killed by a player. */
+    private LootPool.Builder nebuliteShardsBonusPool() throws InterruptedException, ExecutionException {
+        return LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(
+                        LootItem.lootTableItem(NEBULITE_SHARDS)
+                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                .apply(EnchantedCountIncreaseFunction.lootingMultiplier(lookup.get(), UniformGenerator.between(0, 1)))
+                                .when(LootItemRandomChanceCondition.randomChance(0.2F))
+                )
+                .when(LootItemKilledByPlayerCondition.killedByPlayer());
     }
 
     private void createRubblemiteExtraDropItems(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer, ResourceKey<LootTable> table, ItemLike item) throws InterruptedException, ExecutionException {

@@ -1,6 +1,60 @@
 {
   "pools": [
     {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:mirror",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:crescent_banner_pattern",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:music_disc_glare",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:music_disc_decay",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "enderscape:music_disc_bliss",
+          "weight": 6
+        },        {
+          "type": "minecraft:item",
+          "name": "enderscape:stasis_armor_trim_smithing_template",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spire_armor_trim_smithing_template",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:eye_armor_trim_smithing_template",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:vex_armor_trim_smithing_template",
+          "weight": 4
+        }
+      ]
+    },
+    {
       "rolls": 1,
       "entries": [
         {
@@ -26,74 +80,27 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:ominous_bottle",
-          "weight": 2
+          "weight": 6
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:dragon_head",
-          "weight": 2
-        }
-      ]
-    },
-    {
-      "rolls": 2.0,
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:empty",
-          "weight": 64
+          "weight": 6
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:book",
+          "type": "minecraft:loot_table",
+          "value": "borukva:ingredients",
           "functions": [
             {
-              "function": "minecraft:enchant_randomly",
-              "options": [
-                "minecraft:protection",
-                "minecraft:feather_falling",
-                "minecraft:sharpness",
-                "minecraft:bane_of_arthropods",
-                "minecraft:knockback",
-                "minecraft:looting",
-                "minecraft:efficiency",
-                "minecraft:fortune",
-                "minecraft:silk_touch",
-                "minecraft:unbreaking",
-                "minecraft:power",
-                "minecraft:punch"
-              ]
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
             }
           ],
-          "weight": 32
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:book",
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly",
-              "options": [
-                "enderscape:rebound",
-                "enderscape:resonance"
-              ]
-            }
-          ],
-          "weight": 16
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "minecraft:enchant_randomly",
-              "options": [
-                "enderscape:transdimensional",
-                "minecraft:mending"
-              ]
-            }
-          ],
-          "name": "minecraft:book",
-          "weight": 8
+          "weight": 3
         }
       ]
     }

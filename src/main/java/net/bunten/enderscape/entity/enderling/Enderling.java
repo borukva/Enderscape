@@ -1,6 +1,7 @@
 package net.bunten.enderscape.entity.enderling;
 
 import io.netty.buffer.ByteBuf;
+import net.bunten.enderscape.entity.TeleportDodgeMechanics;
 import net.bunten.enderscape.entity.ai.goal.EnderlingChaseGoal;
 import net.bunten.enderscape.entity.ai.goal.EnderlingLowestHealthPlayerTargetGoal;
 import net.bunten.enderscape.entity.ai.goal.EnderlingSlashAttackGoal;
@@ -53,6 +54,8 @@ public class Enderling extends Monster {
     public final AnimationState leftAttackAnimationState = new AnimationState();
 
     private int teleportCooldown;
+    /** Consecutive successful hurt-dodge teleports without a dodge cooldown being applied. */
+    private int consecutiveDodgeTeleports;
     private int attackCooldown;
     private int attackAnimationTicks;
     private boolean useRightAttack = true;
@@ -65,6 +68,9 @@ public class Enderling extends Monster {
 
     public void setTeleportCooldown(int ticks) {
         teleportCooldown = ticks;
+        if (ticks > 0) {
+            consecutiveDodgeTeleports = 0;
+        }
     }
 
     public int getAttackCooldown() {
@@ -217,9 +223,12 @@ public class Enderling extends Monster {
 
         if (teleportCooldown <= 0) {
             for (int i = 0; i < 32; i++) {
-                if (teleportOnCircleWithRadius(3.0)) {
+                if (teleportOnCircleForDodge(3.0, damageSource, i)) {
                     interruptAttackForDodge();
-                    setTeleportCooldown(35);
+                    consecutiveDodgeTeleports = Math.min(3, consecutiveDodgeTeleports + 1);
+                    if (TeleportDodgeMechanics.shouldApplyCooldownAfterDodge(random, consecutiveDodgeTeleports)) {
+                        setTeleportCooldown(TeleportDodgeMechanics.DODGE_COOLDOWN_TICKS);
+                    }
                     return true;
                 }
             }
@@ -227,12 +236,56 @@ public class Enderling extends Monster {
         return super.hurtServer(serverLevel, damageSource, amount);
     }
 
-    private boolean teleportOnCircleWithRadius(double radius) {
-        Entity anchor = getTarget() != null ? getTarget() : this;
-        double angle = random.nextDouble() * Mth.TWO_PI;
+    private static final double DODGE_MIN_HORIZONTAL_MOVE = 1.4;
+
+    /**
+     * Dodge teleport: stay on a ring around the target (or around self if no target), but bias toward
+     * "behind" the target (opposite side from this mob) so the mob does not barely shuffle in melee range.
+     */
+    private boolean teleportOnCircleForDodge(double radius, DamageSource damageSource, int attemptIndex) {
+        Entity target = getTarget();
+        Entity attacker = damageSource.getEntity();
+
+        Entity anchor;
+        Double preferredAngle = null;
+
+        if (target != null) {
+            anchor = target;
+            double tdx = getX() - target.getX();
+            double tdz = getZ() - target.getZ();
+            if (tdx * tdx + tdz * tdz > 1e-4) {
+                // On the ring around the target: prefer the arc opposite this mob ("behind" the target).
+                preferredAngle = Mth.atan2(target.getZ() - getZ(), target.getX() - getX());
+            }
+        } else {
+            anchor = this;
+            if (attacker != null) {
+                double adx = getX() - attacker.getX();
+                double adz = getZ() - attacker.getZ();
+                if (adx * adx + adz * adz > 1e-4) {
+                    preferredAngle = Mth.atan2(adz, adx);
+                }
+            }
+        }
+
+        double angle;
+        if (preferredAngle != null) {
+            // Tight jitter first, then widen so retries can still find a valid floor.
+            double maxJitter = attemptIndex < 12 ? 0.65 : (attemptIndex < 24 ? 1.4 : Mth.PI);
+            angle = preferredAngle + (random.nextDouble() * 2 - 1) * maxJitter;
+        } else {
+            angle = random.nextDouble() * Mth.TWO_PI;
+        }
+
         double x = anchor.getX() + Math.cos(angle) * radius;
         double y = Mth.clamp(anchor.getY() + (random.nextDouble() - 0.5), anchor.getY() - 0.5, anchor.getY() + 0.75);
         double z = anchor.getZ() + Math.sin(angle) * radius;
+
+        double hDistSq = Mth.square(x - getX()) + Mth.square(z - getZ());
+        if (preferredAngle != null && attemptIndex < 28 && hDistSq < DODGE_MIN_HORIZONTAL_MOVE * DODGE_MIN_HORIZONTAL_MOVE) {
+            return false;
+        }
+
         return teleport(x, y, z);
     }
 
