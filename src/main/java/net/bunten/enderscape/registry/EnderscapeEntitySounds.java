@@ -52,6 +52,13 @@ public class EnderscapeEntitySounds {
     public static final SoundEvent ENDERLING_AGGRO = register("enderling.aggro");
     public static final SoundEvent ENDERLING_ATTACK = register("enderling.attack");
     public static final SoundEvent ENDERLING_DEATH = register("enderling.death");
+    public static final SoundEvent WATCHMAN_AGGRO = register("watchman.aggro");
+    public static final SoundEvent WATCHMAN_IDLE_1 = register("watchman.idle_1");
+    public static final SoundEvent WATCHMAN_IDLE_2 = register("watchman.idle_2");
+    public static final SoundEvent WATCHMAN_IDLE_3 = register("watchman.idle_3");
+    public static final SoundEvent WATCHMAN_LANTERN_SMACK = register("watchman.lantern_smack");
+    public static final SoundEvent WATCHMAN_LANTERN_PUSH = register("watchman.lantern_push");
+    public static final SoundEvent WATCHMAN_SUMMON_WRAITHS = register("watchman.summon_wraiths");
 
     private static SoundEvent register(String name) {
         return Enderscape.registerSoundEvent("entity." + name);

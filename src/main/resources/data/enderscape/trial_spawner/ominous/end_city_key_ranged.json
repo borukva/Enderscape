@@ -12,43 +12,17 @@
   "spawn_potentials": [
     {
       "data": {
-        "equipment": {
-          "slot_drop_chances": 0.0,
-          "loot_table": "enderscape:end_city/spawner_equipment/ominous/ranged"
-        },
         "entity": {
-          "id": "minecraft:skeleton",
-          "active_effects": [
-            {
-              "id": "minecraft:fire_resistance",
-              "duration": -1,
-              "show_particles": 0
-            },
-            {
-              "id": "minecraft:instant_damage",
-              "duration": 3,
-              "show_particles": 0,
-              "amplifier": 3
-            }
-          ],
-          "DeathLootTable": "draft:draft",
+          "id": "enderscape:watchman",
           "Tags": [ "enderscape.end_city" ]
         }
       },
-      "weight": 1
+      "weight": 2
     },
     {
       "data": {
         "entity": {
           "id": "minecraft:shulker",
-          "active_effects": [
-            {
-              "id": "minecraft:fire_resistance",
-              "duration": -1,
-              "show_particles": 0
-            }
-          ],
-          "DeathLootTable": "draft:draft",
           "Tags": [ "enderscape.end_city" ]
         }
       },

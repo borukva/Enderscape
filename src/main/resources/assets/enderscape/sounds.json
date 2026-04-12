@@ -9027,5 +9027,26 @@
     "entity.enderling.death": {
         "sounds": [{"name": "enderscape:entity/enderling/generic_land", "type": "file"}],
         "subtitle": "subtitles.enderling.death"
+    },
+    "entity.watchman.aggro": {
+        "sounds": [{"name": "enderscape:entity/watchman/ender_aggro", "type": "file"}]
+    },
+    "entity.watchman.idle_1": {
+        "sounds": [{"name": "enderscape:entity/watchman/ender_idle_1", "type": "file"}]
+    },
+    "entity.watchman.idle_2": {
+        "sounds": [{"name": "enderscape:entity/watchman/ender_idle_2", "type": "file"}]
+    },
+    "entity.watchman.idle_3": {
+        "sounds": [{"name": "enderscape:entity/watchman/ender_idle_3", "type": "file"}]
+    },
+    "entity.watchman.lantern_smack": {
+        "sounds": [{"name": "enderscape:entity/watchman/watchman_lantern_smack", "type": "file"}]
+    },
+    "entity.watchman.lantern_push": {
+        "sounds": [{"name": "enderscape:entity/watchman/watchman_lantern_push", "type": "file"}]
+    },
+    "entity.watchman.summon_wraiths": {
+        "sounds": [{"name": "enderscape:entity/watchman/watchman_summon_wraith", "type": "file"}]
     }
 }

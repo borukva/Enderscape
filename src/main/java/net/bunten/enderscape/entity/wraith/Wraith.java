@@ -3,7 +3,8 @@ package net.bunten.enderscape.entity.wraith;
 import io.netty.buffer.ByteBuf;
 import net.bunten.enderscape.entity.ai.goal.WraithRandomFlyGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithRetreatGoal;
-import net.bunten.enderscape.entity.ai.goal.WraithLowestHealthPlayerTargetGoal;
+import net.bunten.enderscape.entity.ai.goal.LowestHealthPlayerTargetGoal;
+import net.bunten.enderscape.registry.tag.EnderscapeEntityTags;
 import net.bunten.enderscape.entity.ai.goal.WraithSlashAttackGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithCombatFlyGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithSpinSlashGoal;
@@ -27,6 +28,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -175,7 +177,7 @@ public class Wraith extends Monster {
         goalSelector.addGoal(8, new WraithRandomFlyGoal(this));
         goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, net.minecraft.world.entity.player.Player.class, 8.0F, 1.0F));
         targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new WraithLowestHealthPlayerTargetGoal(this));
+        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS));
     }
 
     public enum State {
@@ -260,6 +262,14 @@ public class Wraith extends Monster {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_STATE, State.IDLE);
+    }
+
+    @Override
+    public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource damageSource) {
+        if (damageSource.is(DamageTypes.INDIRECT_MAGIC)) {
+            return true;
+        }
+        return super.isInvulnerableTo(serverLevel, damageSource);
     }
 
     @Override

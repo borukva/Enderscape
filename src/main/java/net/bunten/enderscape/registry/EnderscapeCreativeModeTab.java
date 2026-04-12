@@ -33,6 +33,7 @@ public class EnderscapeCreativeModeTab {
         output.accept(RUBBLEMITE_SPAWN_EGG);
         output.accept(WRAITH_SPAWN_EGG);
         output.accept(ENDERLING_SPAWN_EGG);
+        output.accept(WATCHMAN_SPAWN_EGG);
         output.accept(SHULKER_SPAWN_EGG);
         output.accept(RUSTLE_SPAWN_EGG);
         output.accept(DRIFTER_SPAWN_EGG);

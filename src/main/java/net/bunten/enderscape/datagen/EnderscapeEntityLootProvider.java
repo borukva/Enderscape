@@ -86,6 +86,12 @@ public class EnderscapeEntityLootProvider extends SimpleFabricLootTableProvider 
             );
 
             consumer.accept(
+                    getLootTable(WATCHMAN),
+                    LootTable.lootTable()
+                            .withPool(nebuliteShardsBonusPool())
+            );
+
+            consumer.accept(
                     EnderscapeEntityLootTables.SHEARING_RUSTLE,
                     LootTable.lootTable()
                             .withPool(
@@ -100,7 +106,7 @@ public class EnderscapeEntityLootProvider extends SimpleFabricLootTableProvider 
         }
     }
 
-    /** Wraith and Enderling only; only when killed by a player. */
+    /** Wraith, Enderling, Watchman; only when killed by a player. */
     private LootPool.Builder nebuliteShardsBonusPool() throws InterruptedException, ExecutionException {
         return LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
