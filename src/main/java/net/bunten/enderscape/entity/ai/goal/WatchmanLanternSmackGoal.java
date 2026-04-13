@@ -9,7 +9,7 @@ import java.util.EnumSet;
 
 public class WatchmanLanternSmackGoal extends Goal {
 
-    public static final double MELEE_RANGE = 3.5;
+    public static final double MELEE_RANGE = 4.0;
     public static final double MELEE_RANGE_SQ = MELEE_RANGE * MELEE_RANGE;
 
     private final Watchman watchman;
@@ -24,7 +24,7 @@ public class WatchmanLanternSmackGoal extends Goal {
         if (watchman.getAttackCooldown() > 0 || watchman.getAttackAnimationTicks() > 0) {
             return false;
         }
-        return watchman.findClosestLanternSmackVictim(MELEE_RANGE_SQ) != null;
+        return watchman.findNearestLanternSmackEnemyInRange(MELEE_RANGE_SQ) != null;
     }
 
     @Override
@@ -35,18 +35,18 @@ public class WatchmanLanternSmackGoal extends Goal {
     @Override
     public void start() {
         watchman.getNavigation().stop();
-        watchman.startActionState(Watchman.State.LANTERN_SMACK, Watchman.SMACK_DURATION_TICKS);
-        watchman.setAttackCooldown(35);
-        watchman.playSound(EnderscapeEntitySounds.WATCHMAN_LANTERN_SMACK, 1.0F, watchman.randomPitch());
-        LivingEntity focus = watchman.findClosestLanternSmackVictim(MELEE_RANGE_SQ);
+        LivingEntity focus = watchman.findNearestLanternSmackEnemyInRange(MELEE_RANGE_SQ);
         if (focus != null) {
             watchman.faceForAttack(focus);
         }
+        watchman.startActionState(Watchman.State.LANTERN_SMACK, Watchman.SMACK_DURATION_TICKS);
+        watchman.setAttackCooldown(35);
+        watchman.playSound(EnderscapeEntitySounds.WATCHMAN_LANTERN_SMACK, 1.0F, watchman.randomPitch());
     }
 
     @Override
     public void tick() {
-        LivingEntity focus = watchman.findClosestLanternSmackVictim(MELEE_RANGE_SQ);
+        LivingEntity focus = watchman.findNearestLanternSmackEnemyInRange(MELEE_RANGE_SQ);
         if (focus != null) {
             watchman.faceForAttack(focus);
         }

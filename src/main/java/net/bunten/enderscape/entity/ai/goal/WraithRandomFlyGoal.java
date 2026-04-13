@@ -32,28 +32,16 @@ public class WraithRandomFlyGoal extends Goal {
         if (!(wraith.level() instanceof net.minecraft.server.level.ServerLevel level)) {
             return;
         }
-        BlockPos pos = wraith.blockPosition();
+        double anchorY = wraith.getY();
         for (int i = 0; i < 3; i++) {
-            BlockPos target = pos.offset(
-                    wraith.getRandom().nextInt(15) - 7,
-                    wraith.getRandom().nextInt(11) - 5,
-                    wraith.getRandom().nextInt(15) - 7
-            );
+            double tx = wraith.getX() + (wraith.getRandom().nextInt(15) - 7);
+            double ty = anchorY + (wraith.getRandom().nextDouble() * 2.0 - 1.0);
+            double tz = wraith.getZ() + (wraith.getRandom().nextInt(15) - 7);
+            BlockPos target = BlockPos.containing(tx, ty, tz);
             if (level.isEmptyBlock(target)) {
-                wraith.getMoveControl().setWantedPosition(
-                        target.getX() + 0.5,
-                        target.getY() + 0.5,
-                        target.getZ() + 0.5,
-                        0.35
-                );
+                wraith.getMoveControl().setWantedPosition(tx, ty, tz, 0.35);
                 if (wraith.getTarget() == null) {
-                    wraith.getLookControl().setLookAt(
-                            target.getX() + 0.5,
-                            target.getY() + 0.5,
-                            target.getZ() + 0.5,
-                            180,
-                            20
-                    );
+                    wraith.getLookControl().setLookAt(tx, ty, tz, 180, 20);
                 }
                 break;
             }

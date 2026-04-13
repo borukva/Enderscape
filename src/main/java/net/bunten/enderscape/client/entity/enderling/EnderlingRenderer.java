@@ -6,8 +6,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 public class EnderlingRenderer extends MobRenderer<Enderling, EnderlingRenderState, EnderlingModel> {
     public EnderlingRenderer(EntityRendererProvider.Context context) {
         super(context, new EnderlingModel(context.bakeLayer(EnderscapeModelLayers.ENDERLING)), 0.5F);
-        addLayer(new ItemInHandLayer<>(this));
     }
 
     @Override
@@ -31,7 +28,6 @@ public class EnderlingRenderer extends MobRenderer<Enderling, EnderlingRenderSta
     @Override
     public void extractRenderState(Enderling mob, EnderlingRenderState state, float partialTick) {
         super.extractRenderState(mob, state, partialTick);
-        ArmedEntityRenderState.extractArmedEntityRenderState(mob, state, this.itemModelResolver);
         state.idleAnimationState.copyFrom(mob.idleAnimationState);
         state.walkAnimationState.copyFrom(mob.walkAnimationState);
         state.chaseAnimationState.copyFrom(mob.chaseAnimationState);

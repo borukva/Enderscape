@@ -3,7 +3,6 @@ package net.bunten.enderscape.client.entity.enderling;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.animation.KeyframeAnimation;
-import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -13,18 +12,9 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.HumanoidArm;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 @Environment(EnvType.CLIENT)
-public class EnderlingModel extends EntityModel<EnderlingRenderState> implements ArmedModel<EnderlingRenderState> {
-    private final ModelPart enderling;
-    private final ModelPart bodyRoot;
-    private final ModelPart body;
-    private final ModelPart torso;
+public class EnderlingModel extends EntityModel<EnderlingRenderState> {
     private final ModelPart head;
-    private final ModelPart rightArm;
-    private final ModelPart leftArm;
 
     private final KeyframeAnimation idleAnimation;
     private final KeyframeAnimation walkAnimation;
@@ -34,13 +24,7 @@ public class EnderlingModel extends EntityModel<EnderlingRenderState> implements
 
     public EnderlingModel(ModelPart root) {
         super(root);
-        enderling = root.getChild("enderling");
-        bodyRoot = enderling.getChild("body_root");
-        body = bodyRoot.getChild("body");
-        torso = body.getChild("torso");
-        head = torso.getChild("h_head");
-        rightArm = torso.getChild("right_arm");
-        leftArm = torso.getChild("left_arm");
+        head = root.getChild("enderling").getChild("body_root").getChild("body").getChild("torso").getChild("h_head");
 
         idleAnimation = EnderlingAnimations.IDLE.bake(root);
         walkAnimation = EnderlingAnimations.WALK.bake(root);
@@ -104,19 +88,6 @@ public class EnderlingModel extends EntityModel<EnderlingRenderState> implements
             idleAnimation.apply(state.idleAnimationState, age);
             walkAnimation.apply(state.walkAnimationState, age);
             chaseAnimation.apply(state.chaseAnimationState, age);
-        }
-    }
-
-    @Override
-    public void translateToHand(EnderlingRenderState state, HumanoidArm arm, PoseStack poseStack) {
-        enderling.translateAndRotate(poseStack);
-        bodyRoot.translateAndRotate(poseStack);
-        body.translateAndRotate(poseStack);
-        torso.translateAndRotate(poseStack);
-        if (arm == HumanoidArm.RIGHT) {
-            rightArm.translateAndRotate(poseStack);
-        } else {
-            leftArm.translateAndRotate(poseStack);
         }
     }
 }

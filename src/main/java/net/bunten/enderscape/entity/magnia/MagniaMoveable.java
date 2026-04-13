@@ -35,12 +35,12 @@ public interface MagniaMoveable {
         }
     }
 
-    MagniaProperties createMagniaProperties();
+    MagniaProperties enderscape$createMagniaProperties();
 
     @Nullable
     static MagniaProperties getMagniaProperties(Entity entity) {
         if (entity instanceof MagniaMoveable moveable) {
-            return moveable.createMagniaProperties();
+            return moveable.enderscape$createMagniaProperties();
         }
         return null;
     }

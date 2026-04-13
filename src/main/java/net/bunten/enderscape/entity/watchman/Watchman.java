@@ -162,7 +162,7 @@ public class Watchman extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 50)
+                .add(Attributes.MAX_HEALTH, 15)
                 .add(Attributes.ATTACK_DAMAGE, 20)
                 .add(Attributes.ATTACK_KNOCKBACK, 3.5)
                 .add(Attributes.MOVEMENT_SPEED, 0.34)
@@ -181,7 +181,7 @@ public class Watchman extends Monster {
         goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 12.0F, 0.1F));
         targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS));
+        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WATCHMAN_HOSTILE_TOWARDS));
     }
 
     @Override
@@ -223,31 +223,29 @@ public class Watchman extends Monster {
     }
 
     /**
-     * Face a target for attacks: {@link #lookAt} updates {@code yRot}; using only the look control does not align the
-     * body when navigation is stopped, so body/head yaw are synced for the renderer.
+     * Face a target for attacks. Uses a full per-tick turn budget so the watchman snaps to the target immediately
+     * (unlike {@code lookAt(..., 30, 30)}, which can leave the mob side-on when an attack starts). Body and head yaw
+     * stay in sync for the renderer and for projectiles that copy {@link #getYRot()}.
      */
     public void faceForAttack(LivingEntity toward) {
-        lookAt(toward, 30.0F, 30.0F);
+        lookAt(toward, 360.0F, 360.0F);
         float y = getYRot();
         yBodyRot = y;
         setYHeadRot(y);
     }
 
     /**
-     * Nearest living entity within horizontal reach for lantern smack, not only {@link #getTarget}.
-     * Ignores spectators and creative-mode players so a non-target player cannot safely ignore aggro range rules.
+     * Nearest living entity in horizontal reach that passes {@link #isLanternSmackEnemy} (tag-based list; current
+     * {@link #getTarget()} is not required).
      */
     @Nullable
-    public LivingEntity findClosestLanternSmackVictim(double reachSq) {
+    public LivingEntity findNearestLanternSmackEnemyInRange(double reachSq) {
         double best = reachSq + 1e-4;
         LivingEntity closest = null;
         double pad = Math.sqrt(reachSq) + 1.0;
         List<LivingEntity> nearby = level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(pad));
         for (LivingEntity e : nearby) {
-            if (e == this || !e.isAlive()) {
-                continue;
-            }
-            if (e instanceof Player p && (p.isSpectator() || p.isCreative())) {
+            if (!isLanternSmackEnemy(e)) {
                 continue;
             }
             double d = distanceToSqr(e);
@@ -257,6 +255,17 @@ public class Watchman extends Monster {
             }
         }
         return closest;
+    }
+
+    /**
+     * Lantern smack only considers entity types in {@link EnderscapeEntityTags#WATCHMAN_HOSTILE_TOWARDS} (extend via
+     * datapack). Add {@link #canAttack} / invulnerability checks on top.
+     */
+    private boolean isLanternSmackEnemy(LivingEntity e) {
+        if (!e.getType().is(EnderscapeEntityTags.WATCHMAN_HOSTILE_TOWARDS)) {
+            return false;
+        }
+        return e != this && e.isAlive() && canAttack(e) && !e.isInvulnerable();
     }
 
     private void tickServerActionFrames() {
@@ -281,11 +290,11 @@ public class Watchman extends Monster {
     }
 
     private void doLanternSmackHit(ServerLevel serverLevel) {
-        LivingEntity victim = findClosestLanternSmackVictim(SMACK_HIT_REACH_SQ);
+        LivingEntity victim = findNearestLanternSmackEnemyInRange(SMACK_HIT_REACH_SQ);
         if (victim == null) {
             return;
         }
-        setTarget(victim);
+        faceForAttack(victim);
         float damage = (float) getAttributeValue(Attributes.ATTACK_DAMAGE);
         if (victim.hurtServer(serverLevel, damageSources().mobAttack(this), damage)) {
             // knockback(x,z) expects direction victim → damage source (same as hurt pipeline), not attacker → victim
@@ -307,6 +316,7 @@ public class Watchman extends Monster {
         if (target == null || !target.isAlive()) {
             return;
         }
+        faceForAttack(target);
         Vec3 eye = getEyePosition();
         // Aim at a fixed point on the ground where the target stands — not the moving body/head — so the fireball
         // travels toward that spot in space instead of chasing the player.

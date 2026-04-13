@@ -33,6 +33,7 @@ public class EnderscapeEntityTagProvider extends FabricTagProvider.EntityTypeTag
         valueLookupBuilder(PULLED_BY_MAGNIA_ATTRACTOR).add(ITEM, EXPERIENCE_ORB);
         valueLookupBuilder(RUBBLEMITE_HOSTILE_TOWARDS).add(IRON_GOLEM);
         valueLookupBuilder(WRAITH_HOSTILE_TOWARDS).add(PLAYER);
+        valueLookupBuilder(WATCHMAN_HOSTILE_TOWARDS).add(PLAYER);
 
         valueLookupBuilder(EntityTypeTags.ARTHROPOD).add(RUBBLEMITE);
         valueLookupBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(DRIFTER);

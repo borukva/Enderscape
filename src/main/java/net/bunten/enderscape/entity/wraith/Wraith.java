@@ -60,13 +60,9 @@ public class Wraith extends Monster {
     public final AnimationState spinSlashAnimationState = new AnimationState();
 
     private int teleportCooldown;
-    /** Consecutive successful hurt-dodge teleports without a dodge cooldown being applied. */
     private int consecutiveDodgeTeleports;
     private int attackCooldown;
     private int attackAnimationTicks;
-    private int pendingDamageTicks;
-    private double pendingDamageRangeSqr = 9.0;
-    private float pendingDamageMultiplier = 1.0F;
     private int comboSlashHits;
     private boolean comboStrongAttack;
     private boolean shouldRetreat;
@@ -108,10 +104,6 @@ public class Wraith extends Monster {
 
     public void setAttackAnimationTicks(int ticks) {
         this.attackAnimationTicks = ticks;
-    }
-
-    public int getPendingDamageTicks() {
-        return pendingDamageTicks;
     }
 
     private boolean isAttackState(State state) {
@@ -211,8 +203,8 @@ public class Wraith extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 40)
-                .add(Attributes.ATTACK_DAMAGE, 15)
+                .add(Attributes.MAX_HEALTH, 25)
+                .add(Attributes.ATTACK_DAMAGE, 25)
                 .add(Attributes.MOVEMENT_SPEED, 0.25)
                 .add(Attributes.FOLLOW_RANGE, 32);
     }
@@ -236,19 +228,8 @@ public class Wraith extends Monster {
         }
         if (attackAnimationTicks > 0) {
             attackAnimationTicks--;
-            if (attackAnimationTicks == 0 && !level().isClientSide() && pendingDamageTicks <= 0 && isAttackState(getState())) {
+            if (attackAnimationTicks == 0 && !level().isClientSide() && isAttackState(getState())) {
                 setState(State.IDLE);
-            }
-        }
-        if (pendingDamageTicks > 0) {
-            pendingDamageTicks--;
-            if (pendingDamageTicks == 0 && !level().isClientSide()) {
-                LivingEntity target = getTarget();
-                if (target != null && target.isAlive() && distanceToSqr(target) <= pendingDamageRangeSqr && level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
-                    doScaledHurtTarget(serverLevel, target, pendingDamageMultiplier);
-                }
-                pendingDamageMultiplier = 1.0F;
-                pendingDamageRangeSqr = 9.0;
             }
         }
     }

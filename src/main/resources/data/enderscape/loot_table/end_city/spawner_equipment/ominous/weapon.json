@@ -7,19 +7,11 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"name": "bartefacts:enderite_sword"
+					"name": "minecraft:netherite_sword"
 				},
 				{
 					"type": "minecraft:item",
-					"name": "bartefacts:enderite_axe"
-				}
-			],
-			"functions": [
-				{
-					"function": "minecraft:set_enchantments",
-					"enchantments": {
-						"minecraft:sharpness": 5
-					}
+					"name": "minecraft:netherite_axe"
 				}
 			]
 		}

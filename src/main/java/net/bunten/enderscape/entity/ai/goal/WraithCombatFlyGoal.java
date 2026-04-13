@@ -63,7 +63,7 @@ public class WraithCombatFlyGoal extends Goal {
         double desiredRadius = Mth.clamp(distance, ORBIT_RADIUS_MIN, ORBIT_RADIUS_MAX);
         if (wraith.shouldRetreatNow()) {
             desiredRadius = ORBIT_RADIUS_MAX;
-        } else if (wraith.getAttackCooldown() <= 0 && wraith.getPendingDamageTicks() <= 0) {
+        } else if (wraith.getAttackCooldown() <= 0) {
             // Force a close-in approach when attack window opens, instead of pure orbiting.
             desiredRadius = ATTACK_ENGAGE_RADIUS;
         } else if (distance < ATTACK_APPROACH_DISTANCE) {

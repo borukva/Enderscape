@@ -41,14 +41,14 @@ public class WatchmanLanternPushGoal extends Goal {
     @Override
     public void start() {
         watchman.getNavigation().stop();
-        watchman.startActionState(Watchman.State.LANTERN_PUSH, Watchman.LANTERN_PUSH_DURATION_TICKS);
-        watchman.setAttackCooldown(25);
-        watchman.setFireballCooldown(45);
-        watchman.playSound(EnderscapeEntitySounds.WATCHMAN_LANTERN_PUSH, 1.0F, watchman.randomPitch());
         LivingEntity target = watchman.getTarget();
         if (target != null) {
             watchman.faceForAttack(target);
         }
+        watchman.startActionState(Watchman.State.LANTERN_PUSH, Watchman.LANTERN_PUSH_DURATION_TICKS);
+        watchman.setAttackCooldown(25);
+        watchman.setFireballCooldown(45);
+        watchman.playSound(EnderscapeEntitySounds.WATCHMAN_LANTERN_PUSH, 1.0F, watchman.randomPitch());
     }
 
     @Override

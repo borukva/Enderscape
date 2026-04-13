@@ -3,12 +3,12 @@ package net.bunten.enderscape.client.entity.enderling;
 import net.bunten.enderscape.Enderscape;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.AnimationState;
 
 @Environment(EnvType.CLIENT)
-public class EnderlingRenderState extends ArmedEntityRenderState {
+public class EnderlingRenderState extends LivingEntityRenderState {
     public static final ResourceLocation TEXTURE = Enderscape.id("textures/entity/enderling/enderling.png");
 
     public final AnimationState idleAnimationState = new AnimationState();

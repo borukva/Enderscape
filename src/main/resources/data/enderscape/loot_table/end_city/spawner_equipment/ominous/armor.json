@@ -13,7 +13,7 @@
 								"entries": [
 									{
 										"type": "minecraft:item",
-										"name": "bartefacts:invisible_helmet"
+										"name": "minecraft:netherite_helmet"
 									}
 								]
 							},
@@ -22,16 +22,7 @@
 								"entries": [
 									{
 										"type": "minecraft:item",
-										"name": "bartefacts:invisible_chestplate"
-									}
-								]
-							},
-							{
-								"rolls": 1,
-								"entries": [
-									{
-										"type": "minecraft:item",
-										"name": "bartefacts:invisible_boots"
+										"name": "minecraft:netherite_chestplate"
 									}
 								]
 							}
@@ -46,14 +37,14 @@
 						{
 							"attribute": "minecraft:attack_damage",
 							"id": "any1",
-							"amount": 11,
+							"amount": 6,
 							"operation": "add_value",
 							"slot": "armor"
 						},
 						{
 							"attribute": "minecraft:attack_speed",
 							"id": "any2",
-							"amount": -0.7,
+							"amount": -0.4,
 							"operation": "add_multiplied_base",
 							"slot": "armor"
 						},
@@ -67,7 +58,7 @@
 						{
 							"attribute": "minecraft:max_health",
 							"id": "any4",
-							"amount": 20,
+							"amount": 10,
 							"operation": "add_value",
 							"slot": "armor"
 						}

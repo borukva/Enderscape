@@ -40,14 +40,14 @@ public class WatchmanSummonWraithsGoal extends Goal {
     @Override
     public void start() {
         watchman.getNavigation().stop();
-        watchman.startActionState(Watchman.State.SUMMON_WRAITHS, Watchman.SUMMON_DURATION_TICKS);
-        watchman.setAttackCooldown(120);
-        watchman.setSummonCooldown(1000);
-        watchman.playSound(EnderscapeEntitySounds.WATCHMAN_SUMMON_WRAITHS, 1.2F, watchman.randomPitch());
         LivingEntity target = watchman.getTarget();
         if (target != null) {
             watchman.faceForAttack(target);
         }
+        watchman.startActionState(Watchman.State.SUMMON_WRAITHS, Watchman.SUMMON_DURATION_TICKS);
+        watchman.setAttackCooldown(120);
+        watchman.setSummonCooldown(1000);
+        watchman.playSound(EnderscapeEntitySounds.WATCHMAN_SUMMON_WRAITHS, 1.2F, watchman.randomPitch());
     }
 
     @Override

@@ -124,9 +124,9 @@ public class Enderling extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 34)
-                .add(Attributes.ATTACK_DAMAGE, 15)
-                .add(Attributes.MOVEMENT_SPEED, 0.28)
+                .add(Attributes.MAX_HEALTH, 25)
+                .add(Attributes.ATTACK_DAMAGE, 20)
+                .add(Attributes.MOVEMENT_SPEED, 0.3)
                 .add(Attributes.FOLLOW_RANGE, 32);
     }
 

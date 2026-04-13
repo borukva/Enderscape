@@ -46,7 +46,7 @@ public abstract class ItemEntityMixin extends Entity implements MagniaMoveable {
 
     @Unique
     @Override
-    public MagniaProperties createMagniaProperties() {
+    public MagniaProperties enderscape$createMagniaProperties() {
         return new MagniaProperties(
                 item -> false,
                 item -> 0.6F,

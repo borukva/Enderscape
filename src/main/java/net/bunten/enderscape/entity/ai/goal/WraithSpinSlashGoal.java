@@ -30,7 +30,7 @@ public class WraithSpinSlashGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (wraith.getAttackCooldown() > 0 || wraith.getPendingDamageTicks() > 0 || wraith.shouldRetreatNow()) {
+        if (wraith.getAttackCooldown() > 0 || wraith.shouldRetreatNow()) {
             return false;
         }
         LivingEntity target = wraith.getTarget();

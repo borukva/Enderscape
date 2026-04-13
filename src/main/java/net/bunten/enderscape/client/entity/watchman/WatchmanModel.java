@@ -344,8 +344,8 @@ public class WatchmanModel extends EntityModel<WatchmanRenderState> {
 			return;
 		}
 
-		modelPart.xRot += (state.xRot * (Mth.PI / 180)) / 2;
-		modelPart.yRot += (state.yRot * (Mth.PI / 180)) / 2;
+		// Entity yaw/pitch are already applied by MobRenderer; do not add them again on the root bone or the body
+		// walks sideways relative to movement.
 
 		idleAnimation.apply(state.idleAnimationState, age);
 		walkAnimation.apply(state.walkAnimationState, age);

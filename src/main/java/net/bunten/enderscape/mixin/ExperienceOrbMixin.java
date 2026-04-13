@@ -27,7 +27,7 @@ public abstract class ExperienceOrbMixin extends Entity implements MagniaMoveabl
 
     @Unique
     @Override
-    public MagniaProperties createMagniaProperties() {
+    public MagniaProperties enderscape$createMagniaProperties() {
         return new MagniaProperties(
                 item -> false,
                 item -> 0.6F,

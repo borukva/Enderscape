@@ -27,7 +27,7 @@ public abstract class AbstractMinecartMixin extends Entity implements MagniaMove
 
     @Unique
     @Override
-    public MagniaProperties createMagniaProperties() {
+    public MagniaProperties enderscape$createMagniaProperties() {
         return new MagniaProperties(
                 entity -> true,
                 entity -> 0.6F,
