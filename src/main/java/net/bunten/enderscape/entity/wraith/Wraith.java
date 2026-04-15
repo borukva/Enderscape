@@ -3,8 +3,6 @@ package net.bunten.enderscape.entity.wraith;
 import io.netty.buffer.ByteBuf;
 import net.bunten.enderscape.entity.ai.goal.WraithRandomFlyGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithRetreatGoal;
-import net.bunten.enderscape.entity.ai.goal.LowestHealthPlayerTargetGoal;
-import net.bunten.enderscape.registry.tag.EnderscapeEntityTags;
 import net.bunten.enderscape.entity.ai.goal.WraithSlashAttackGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithCombatFlyGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithSpinSlashGoal;
@@ -37,7 +35,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,6 +47,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.function.IntFunction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("resource")
 public class Wraith extends Monster {
@@ -157,6 +158,15 @@ public class Wraith extends Monster {
         playSound(EnderscapeEntitySounds.WRAITH_AGGRO, 1.6F, randomPitch());
     }
 
+    @Override
+    public void setTarget(@Nullable LivingEntity target) {
+        LivingEntity previousTarget = getTarget();
+        super.setTarget(target);
+        if (!level().isClientSide() && target instanceof net.minecraft.world.entity.player.Player && target != previousTarget) {
+            playAggroSound();
+        }
+    }
+
     public boolean doScaledHurtTarget(ServerLevel serverLevel, LivingEntity target, float damageMultiplier) {
         if (damageMultiplier <= 1.0F) {
             return doHurtTarget(serverLevel, target);
@@ -178,7 +188,7 @@ public class Wraith extends Monster {
         goalSelector.addGoal(8, new WraithRandomFlyGoal(this));
         goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, net.minecraft.world.entity.player.Player.class, 8.0F, 1.0F));
         targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS, false));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, net.minecraft.world.entity.player.Player.class, false));
     }
 
     public enum State {
@@ -280,7 +290,7 @@ public class Wraith extends Monster {
             return false;
         }
 
-        if (teleportCooldown <= 0) {
+        if (teleportCooldown <= 0 && TeleportDodgeMechanics.canAttemptDodge(damageSource)) {
             for (int i = 0; i < 64; i++) {
                 if (teleportOnCircleWithRadius(WraithCombatFlyGoal.ORBIT_RADIUS_MAX)) {
                     interruptAttackForDodge();
@@ -294,6 +304,14 @@ public class Wraith extends Monster {
             }
         }
         return super.hurtServer(serverLevel, damageSource, amount);
+    }
+
+    @Override
+    public boolean canRide(Entity vehicle) {
+        if (vehicle instanceof VehicleEntity) {
+            return false;
+        }
+        return super.canRide(vehicle);
     }
 
     private boolean teleportOnCircleWithRadius(double radius) {

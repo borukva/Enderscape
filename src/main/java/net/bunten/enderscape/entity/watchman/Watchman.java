@@ -11,6 +11,7 @@ import net.bunten.enderscape.registry.tag.EnderscapeBlockTags;
 import net.bunten.enderscape.util.IDragonFireball;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -25,6 +26,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,9 +36,9 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.bunten.enderscape.entity.ai.goal.LowestHealthPlayerTargetGoal;
 import net.bunten.enderscape.registry.tag.EnderscapeEntityTags;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.DragonFireball;
@@ -138,6 +140,15 @@ public class Watchman extends Monster {
         playSound(EnderscapeEntitySounds.WATCHMAN_AGGRO, 1.6F, randomPitch());
     }
 
+    @Override
+    public void setTarget(@Nullable LivingEntity target) {
+        LivingEntity previousTarget = getTarget();
+        super.setTarget(target);
+        if (!level().isClientSide() && target instanceof Player && target != previousTarget) {
+            playAggroSound();
+        }
+    }
+
     public enum State {
         IDLE(0),
         WALK(1),
@@ -188,7 +199,7 @@ public class Watchman extends Monster {
         goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 12.0F, 0.1F));
         targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WATCHMAN_HOSTILE_TOWARDS, true));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
     @Override
@@ -438,6 +449,14 @@ public class Watchman extends Monster {
             return true;
         }
         return super.isInvulnerableTo(serverLevel, damageSource);
+    }
+
+    @Override
+    public boolean canRide(Entity vehicle) {
+        if (vehicle instanceof VehicleEntity) {
+            return false;
+        }
+        return super.canRide(vehicle);
     }
 
     public static boolean canSpawn(EntityType<Watchman> ignoredType, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos, RandomSource random) {

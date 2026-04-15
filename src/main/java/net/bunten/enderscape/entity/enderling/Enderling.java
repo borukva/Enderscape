@@ -3,8 +3,6 @@ package net.bunten.enderscape.entity.enderling;
 import io.netty.buffer.ByteBuf;
 import net.bunten.enderscape.entity.TeleportDodgeMechanics;
 import net.bunten.enderscape.entity.ai.goal.EnderlingChaseGoal;
-import net.bunten.enderscape.entity.ai.goal.LowestHealthPlayerTargetGoal;
-import net.bunten.enderscape.registry.tag.EnderscapeEntityTags;
 import net.bunten.enderscape.entity.ai.goal.EnderlingSlashAttackGoal;
 import net.bunten.enderscape.registry.EnderscapeEntities;
 import net.bunten.enderscape.registry.EnderscapeEntitySounds;
@@ -30,11 +28,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,6 +43,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.IntFunction;
 
@@ -150,7 +152,7 @@ public class Enderling extends Monster {
         goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, net.minecraft.world.entity.player.Player.class, 8.0F, 1.0F));
         targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS, true));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, net.minecraft.world.entity.player.Player.class, true));
     }
 
     public enum State {
@@ -250,7 +252,7 @@ public class Enderling extends Monster {
             return false;
         }
 
-        if (teleportCooldown <= 0) {
+        if (teleportCooldown <= 0 && TeleportDodgeMechanics.canAttemptDodge(damageSource)) {
             for (int i = 0; i < 32; i++) {
                 if (teleportOnCircleForDodge(0.6, damageSource, i)) {
                     interruptAttackForDodge();
@@ -263,6 +265,14 @@ public class Enderling extends Monster {
             }
         }
         return super.hurtServer(serverLevel, damageSource, amount);
+    }
+
+    @Override
+    public boolean canRide(Entity vehicle) {
+        if (vehicle instanceof VehicleEntity) {
+            return false;
+        }
+        return super.canRide(vehicle);
     }
 
     private static final double DODGE_MIN_HORIZONTAL_MOVE = 1.4;
@@ -417,6 +427,15 @@ public class Enderling extends Monster {
 
     public void playAggroSound() {
         playSound(EnderscapeEntitySounds.ENDERLING_AGGRO, 1.6F, randomPitch());
+    }
+
+    @Override
+    public void setTarget(@Nullable LivingEntity target) {
+        LivingEntity previousTarget = getTarget();
+        super.setTarget(target);
+        if (!level().isClientSide() && target instanceof net.minecraft.world.entity.player.Player && target != previousTarget) {
+            playAggroSound();
+        }
     }
 
     @Override

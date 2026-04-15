@@ -1,6 +1,9 @@
 package net.bunten.enderscape.entity;
 
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Shared dodge-teleport rules for {@link net.bunten.enderscape.entity.wraith.Wraith} and
@@ -24,5 +27,13 @@ public final class TeleportDodgeMechanics {
             return true;
         }
         return random.nextFloat() < streakAfterThisDodge / 3.0f;
+    }
+
+    /**
+     * Dodge triggers only for direct player melee hits or projectile damage.
+     * This avoids dodging passive/environmental sources such as fire, poison, etc.
+     */
+    public static boolean canAttemptDodge(DamageSource damageSource) {
+        return damageSource.getEntity() instanceof Player || damageSource.is(DamageTypeTags.IS_PROJECTILE);
     }
 }
