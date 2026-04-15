@@ -48,6 +48,12 @@ import java.util.function.IntFunction;
 @SuppressWarnings("resource")
 public class Enderling extends Monster {
     private static final EntityDataAccessor<State> DATA_STATE = SynchedEntityData.defineId(Enderling.class, EnderscapeEntities.ENDERLING_STATE);
+    private static final double AGGRO_TELEPORT_TRIGGER_DISTANCE = 14.0;
+    private static final double AGGRO_TELEPORT_TRIGGER_DISTANCE_SQR = AGGRO_TELEPORT_TRIGGER_DISTANCE * AGGRO_TELEPORT_TRIGGER_DISTANCE;
+    private static final int AGGRO_TELEPORT_ATTEMPTS = 20;
+    private static final int AGGRO_TELEPORT_COOLDOWN_TICKS = 30;
+    private static final double AGGRO_TELEPORT_MIN_RADIUS = 1.5;
+    private static final double AGGRO_TELEPORT_MAX_RADIUS = 3.5;
 
     public final AnimationState idleAnimationState = new AnimationState();
     public final AnimationState walkAnimationState = new AnimationState();
@@ -113,19 +119,23 @@ public class Enderling extends Monster {
         return isAttackState(getState()) && getAttackAnimationTicks() > 0;
     }
 
-    /** Cancel active slash when a dodge teleport succeeds. */
-    public void interruptAttackForDodge() {
+    private void cancelAttackState() {
         setAttackAnimationTicks(0);
         if (isAttackState(getState())) {
             setState(State.IDLE);
         }
+    }
+
+    /** Cancel active slash when a dodge teleport succeeds. */
+    public void interruptAttackForDodge() {
+        cancelAttackState();
         setAttackCooldown(Math.max(getAttackCooldown(), 8));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 25)
-                .add(Attributes.ATTACK_DAMAGE, 20)
+                .add(Attributes.MAX_HEALTH, 15)
+                .add(Attributes.ATTACK_DAMAGE, 6)
                 .add(Attributes.MOVEMENT_SPEED, 0.3)
                 .add(Attributes.FOLLOW_RANGE, 32);
     }
@@ -140,7 +150,7 @@ public class Enderling extends Monster {
         goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, net.minecraft.world.entity.player.Player.class, 8.0F, 1.0F));
         targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS));
+        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS, true));
     }
 
     public enum State {
@@ -178,6 +188,12 @@ public class Enderling extends Monster {
         if (level().isClientSide()) {
             ensureClientAnimationState();
         }
+        if (!isAlive() || deathTime > 0) {
+            if (attackAnimationTicks > 0 || isAttackState(getState())) {
+                cancelAttackState();
+            }
+            return;
+        }
         if (teleportCooldown > 0) {
             teleportCooldown--;
         }
@@ -190,6 +206,9 @@ public class Enderling extends Monster {
                 setState(State.IDLE);
             }
         }
+        if (!level().isClientSide()) {
+            tryTeleportToAggroTargetIfFar();
+        }
         if (!level().isClientSide() && getAttackAnimationTicks() <= 0 && !isAttackState(getState())) {
             if (getTarget() == null) {
                 if (getNavigation().isInProgress()) {
@@ -201,7 +220,7 @@ public class Enderling extends Monster {
         }
     }
 
-    private void ensureClientAnimationState() {
+    public void ensureClientAnimationState() {
         switch (getState()) {
             case IDLE -> idleAnimationState.startIfStopped(tickCount);
             case WALK -> walkAnimationState.startIfStopped(tickCount);
@@ -233,7 +252,7 @@ public class Enderling extends Monster {
 
         if (teleportCooldown <= 0) {
             for (int i = 0; i < 32; i++) {
-                if (teleportOnCircleForDodge(3.0, damageSource, i)) {
+                if (teleportOnCircleForDodge(0.6, damageSource, i)) {
                     interruptAttackForDodge();
                     consecutiveDodgeTeleports = Math.min(3, consecutiveDodgeTeleports + 1);
                     if (TeleportDodgeMechanics.shouldApplyCooldownAfterDodge(random, consecutiveDodgeTeleports)) {
@@ -247,6 +266,30 @@ public class Enderling extends Monster {
     }
 
     private static final double DODGE_MIN_HORIZONTAL_MOVE = 1.4;
+
+    private void tryTeleportToAggroTargetIfFar() {
+        if (teleportCooldown > 0 || isInAttackState()) {
+            return;
+        }
+
+        Entity target = getTarget();
+        if (target == null || !target.isAlive() || distanceToSqr(target) < AGGRO_TELEPORT_TRIGGER_DISTANCE_SQR) {
+            return;
+        }
+
+        for (int attempt = 0; attempt < AGGRO_TELEPORT_ATTEMPTS; attempt++) {
+            double angle = random.nextDouble() * Mth.TWO_PI;
+            double radius = Mth.lerp(random.nextDouble(), AGGRO_TELEPORT_MIN_RADIUS, AGGRO_TELEPORT_MAX_RADIUS);
+            double x = target.getX() + Math.cos(angle) * radius;
+            double y = target.getY() + (random.nextDouble() - 0.5) * 2.0;
+            double z = target.getZ() + Math.sin(angle) * radius;
+
+            if (teleport(x, y, z)) {
+                setTeleportCooldown(AGGRO_TELEPORT_COOLDOWN_TICKS);
+                break;
+            }
+        }
+    }
 
     /**
      * Dodge teleport: stay on a ring around the target (or around self if no target), but bias toward

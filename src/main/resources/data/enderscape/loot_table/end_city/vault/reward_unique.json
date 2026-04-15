@@ -30,7 +30,7 @@
               ]
             }
           ],
-          "weight": 32
+          "weight": 3
         },
         {
           "type": "minecraft:item",
@@ -46,17 +46,17 @@
               ]
             }
           ],
-          "weight": 16
+          "weight": 3
         },
         {
           "type": "minecraft:loot_table",
           "value": "borukva:artefacts",
-          "weight": 8
+          "weight": 2
         },
         {
           "type": "minecraft:loot_table",
           "value": "borukva:bartefacts",
-          "weight": 8
+          "weight": 2
         }
       ]
     }

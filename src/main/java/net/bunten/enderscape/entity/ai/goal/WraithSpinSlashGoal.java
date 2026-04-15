@@ -15,7 +15,7 @@ public class WraithSpinSlashGoal extends Goal {
     private static final double SPIN_VERTICAL_TOLERANCE = 2.0;
     private static final int SPIN_DURATION_TICKS = 40;
     private static final int DAMAGE_AT_TICK = 6;
-    private static final int COOLDOWN_TICKS = 58;
+    private static final int COOLDOWN_TICKS = 110;
     private static final float DAMAGE_MULTIPLIER = 1.35F;
     private static final double ATTACK_FOLLOW_DISTANCE = 0.85;
 

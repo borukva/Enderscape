@@ -12,6 +12,7 @@ import net.minecraft.util.Mth;
 @Environment(EnvType.CLIENT)
 public class WraithModel extends EntityModel<WraithRenderState> {
     private final ModelPart wraith;
+    private final ModelPart hHead;
 
     private final KeyframeAnimation idleAnimation;
     private final KeyframeAnimation walkAnimation;
@@ -22,6 +23,7 @@ public class WraithModel extends EntityModel<WraithRenderState> {
     public WraithModel(ModelPart root) {
         super(root);
         this.wraith = root.getChild("wraith");
+        this.hHead = this.wraith.getChild("body_rotation").getChild("body_root").getChild("body").getChild("torso").getChild("upper_torso").getChild("h_head");
 
         idleAnimation = WraithAnimations.IDLE.bake(root);
         walkAnimation = WraithAnimations.WALK.bake(root);
@@ -204,9 +206,6 @@ public class WraithModel extends EntityModel<WraithRenderState> {
             wraith.xRot = Mth.lerp(0.1F, wraith.xRot, 0);
             wraith.yRot = Mth.lerp(0.1F, wraith.yRot, 0);
             wraith.zRot = Mth.lerp(0.1F, wraith.zRot, 0);
-        } else {
-            wraith.xRot += (state.xRot * (Mth.PI / 180)) / 2;
-            wraith.yRot += (state.yRot * (Mth.PI / 180)) / 2;
         }
 
         idleAnimation.apply(state.idleAnimationState, age);
@@ -214,5 +213,10 @@ public class WraithModel extends EntityModel<WraithRenderState> {
         rightSlashAnimation.apply(state.rightSlashAnimationState, age);
         leftSlashAnimation.apply(state.leftSlashAnimationState, age);
         spinSlashAnimation.apply(state.spinSlashAnimationState, age);
+
+        if (state.deathTime <= 0) {
+            hHead.xRot += (state.xRot * (Mth.PI / 180)) / 2;
+            hHead.yRot += (state.yRot * (Mth.PI / 180)) / 2;
+        }
     }
 }

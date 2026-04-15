@@ -23,6 +23,7 @@ public class WatchmanRenderer extends MobRenderer<Watchman, WatchmanRenderState,
 
     @Override
     public void extractRenderState(Watchman mob, WatchmanRenderState state, float partialTick) {
+        mob.ensureClientAnimationState();
         super.extractRenderState(mob, state, partialTick);
         state.idleAnimationState.copyFrom(mob.idleAnimationState);
         state.walkAnimationState.copyFrom(mob.walkAnimationState);

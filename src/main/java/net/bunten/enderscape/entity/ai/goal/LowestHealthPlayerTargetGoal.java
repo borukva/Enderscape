@@ -21,13 +21,16 @@ public class LowestHealthPlayerTargetGoal extends TargetGoal {
 
     private final Runnable onAggro;
     private final TagKey<EntityType<?>> hostileTowardsPlayers;
+    /** When true, players blocked by walls are not valid targets (Wraith uses false to keep x-ray aggro). */
+    private final boolean mustSee;
     @Nullable
     private Player target;
 
-    public LowestHealthPlayerTargetGoal(Mob mob, Runnable onAggro, TagKey<EntityType<?>> hostileTowardsPlayers) {
-        super(mob, false);
+    public LowestHealthPlayerTargetGoal(Mob mob, Runnable onAggro, TagKey<EntityType<?>> hostileTowardsPlayers, boolean mustSee) {
+        super(mob, mustSee);
         this.onAggro = onAggro;
         this.hostileTowardsPlayers = hostileTowardsPlayers;
+        this.mustSee = mustSee;
     }
 
     @Override
@@ -58,9 +61,12 @@ public class LowestHealthPlayerTargetGoal extends TargetGoal {
     }
 
     private boolean isCandidate(Player player) {
-        return player.isAlive()
-                && !player.isSpectator()
-                && !player.isCreative()
-                && player.getType().is(hostileTowardsPlayers);
+        if (!player.isAlive()
+                || player.isSpectator()
+                || player.isCreative()
+                || !player.getType().is(hostileTowardsPlayers)) {
+            return false;
+        }
+        return !mustSee || mob.getSensing().hasLineOfSight(player);
     }
 }

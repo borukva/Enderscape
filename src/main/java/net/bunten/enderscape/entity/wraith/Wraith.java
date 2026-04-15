@@ -118,6 +118,15 @@ public class Wraith extends Monster {
         setAttackAnimationTicks(animationTicks);
     }
 
+    /** Cancel active slash when a dodge teleport succeeds. */
+    public void interruptAttackForDodge() {
+        setAttackAnimationTicks(0);
+        if (isAttackState(getState())) {
+            setState(State.IDLE);
+        }
+        setAttackCooldown(Math.max(getAttackCooldown(), 12));
+    }
+
     public void recordSlashHit() {
         comboSlashHits++;
         if (comboSlashHits >= 2) {
@@ -169,7 +178,7 @@ public class Wraith extends Monster {
         goalSelector.addGoal(8, new WraithRandomFlyGoal(this));
         goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, net.minecraft.world.entity.player.Player.class, 8.0F, 1.0F));
         targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS));
+        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WRAITH_HOSTILE_TOWARDS, false));
     }
 
     public enum State {
@@ -203,8 +212,8 @@ public class Wraith extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 25)
-                .add(Attributes.ATTACK_DAMAGE, 25)
+                .add(Attributes.MAX_HEALTH, 15)
+                .add(Attributes.ATTACK_DAMAGE, 10)
                 .add(Attributes.MOVEMENT_SPEED, 0.25)
                 .add(Attributes.FOLLOW_RANGE, 32);
     }
@@ -220,6 +229,18 @@ public class Wraith extends Monster {
         super.tick();
         noPhysics = false;
         setNoGravity(true);
+        if (level().isClientSide()) {
+            ensureClientAnimationState();
+        }
+        if (!isAlive() || deathTime > 0) {
+            if (attackAnimationTicks > 0 || isAttackState(getState())) {
+                setAttackAnimationTicks(0);
+                if (isAttackState(getState())) {
+                    setState(State.IDLE);
+                }
+            }
+            return;
+        }
         if (teleportCooldown > 0) {
             teleportCooldown--;
         }
@@ -262,6 +283,8 @@ public class Wraith extends Monster {
         if (teleportCooldown <= 0) {
             for (int i = 0; i < 64; i++) {
                 if (teleportOnCircleWithRadius(WraithCombatFlyGoal.ORBIT_RADIUS_MAX)) {
+                    interruptAttackForDodge();
+                    resetComboWindow();
                     consecutiveDodgeTeleports = Math.min(3, consecutiveDodgeTeleports + 1);
                     if (TeleportDodgeMechanics.shouldApplyCooldownAfterDodge(random, consecutiveDodgeTeleports)) {
                         setTeleportCooldown(TeleportDodgeMechanics.DODGE_COOLDOWN_TICKS);
@@ -291,13 +314,7 @@ public class Wraith extends Monster {
     public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
         if (DATA_STATE.equals(accessor)) {
             resetAnimations();
-            switch (getState()) {
-                case IDLE -> idleAnimationState.startIfStopped(tickCount);
-                case WALK -> walkAnimationState.startIfStopped(tickCount);
-                case RIGHT_SLASH -> rightSlashAnimationState.startIfStopped(tickCount);
-                case LEFT_SLASH -> leftSlashAnimationState.startIfStopped(tickCount);
-                case SPIN_SLASH -> spinSlashAnimationState.startIfStopped(tickCount);
-            }
+            ensureClientAnimationState();
         }
         super.onSyncedDataUpdated(accessor);
     }
@@ -308,6 +325,16 @@ public class Wraith extends Monster {
         rightSlashAnimationState.stop();
         leftSlashAnimationState.stop();
         spinSlashAnimationState.stop();
+    }
+
+    public void ensureClientAnimationState() {
+        switch (getState()) {
+            case IDLE -> idleAnimationState.startIfStopped(tickCount);
+            case WALK -> walkAnimationState.startIfStopped(tickCount);
+            case RIGHT_SLASH -> rightSlashAnimationState.startIfStopped(tickCount);
+            case LEFT_SLASH -> leftSlashAnimationState.startIfStopped(tickCount);
+            case SPIN_SLASH -> spinSlashAnimationState.startIfStopped(tickCount);
+        }
     }
 
     public boolean teleport() {

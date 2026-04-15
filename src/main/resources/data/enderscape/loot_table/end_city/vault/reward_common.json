@@ -20,28 +20,34 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:chorus_fruit",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 4,
-                "max": 8
-              }
-            }
-          ],
-          "weight": 4
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:enchanted_golden_apple",
           "weight": 3
-        },
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
         {
           "type": "minecraft:item",
           "name": "minecraft:shulker_box",
           "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:netherite_helmet",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "type": "minecraft:uniform",
+                "min": 35,
+                "max": 50
+              },
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -62,6 +68,22 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_leggings",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "type": "minecraft:uniform",
+                "min": 35,
+                "max": 50
+              },
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:netherite_boots",
           "functions": [
             {
               "function": "minecraft:enchant_with_levels",

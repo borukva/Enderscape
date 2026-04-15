@@ -5,10 +5,6 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:empty",
-          "weight": 15
-        },
-        {
           "type": "minecraft:item",
           "name": "enderscape:mirror",
           "weight": 3

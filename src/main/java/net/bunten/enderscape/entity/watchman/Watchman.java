@@ -54,7 +54,7 @@ public class Watchman extends Monster {
 
     public static final int SMACK_DURATION_TICKS = 50;
     public static final int SMACK_HIT_REMAINING_TICKS = 34;
-    private static final double SMACK_HIT_REACH = 5.25;
+    private static final double SMACK_HIT_REACH = 5.0;
     private static final double SMACK_HIT_REACH_SQ = SMACK_HIT_REACH * SMACK_HIT_REACH;
     public static final int LANTERN_PUSH_DURATION_TICKS = 40;
     public static final int LANTERN_PUSH_FIRE_REMAINING_TICKS = 28;
@@ -123,6 +123,13 @@ public class Watchman extends Monster {
         return state == State.LANTERN_SMACK || state == State.SUMMON_WRAITHS || state == State.LANTERN_PUSH;
     }
 
+    private void cancelActionState() {
+        attackAnimationTicks = 0;
+        if (isActionState(getState())) {
+            setState(State.IDLE);
+        }
+    }
+
     public float randomPitch() {
         return 0.9F + random.nextFloat() * 0.2F;
     }
@@ -163,7 +170,7 @@ public class Watchman extends Monster {
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 15)
-                .add(Attributes.ATTACK_DAMAGE, 20)
+                .add(Attributes.ATTACK_DAMAGE, 8)
                 .add(Attributes.ATTACK_KNOCKBACK, 3.5)
                 .add(Attributes.MOVEMENT_SPEED, 0.34)
                 .add(Attributes.FOLLOW_RANGE, 40);
@@ -181,7 +188,7 @@ public class Watchman extends Monster {
         goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 12.0F, 0.1F));
         targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WATCHMAN_HOSTILE_TOWARDS));
+        targetSelector.addGoal(2, new LowestHealthPlayerTargetGoal(this, this::playAggroSound, EnderscapeEntityTags.WATCHMAN_HOSTILE_TOWARDS, true));
     }
 
     @Override
@@ -194,6 +201,12 @@ public class Watchman extends Monster {
             } else {
                 deathAnimationState.stop();
             }
+        }
+        if (!isAlive() || deathTime > 0) {
+            if (attackAnimationTicks > 0 || isActionState(getState())) {
+                cancelActionState();
+            }
+            return;
         }
         if (attackCooldown > 0) {
             attackCooldown--;
@@ -248,6 +261,9 @@ public class Watchman extends Monster {
             if (!isLanternSmackEnemy(e)) {
                 continue;
             }
+            if (!getSensing().hasLineOfSight(e)) {
+                continue;
+            }
             double d = distanceToSqr(e);
             if (d <= reachSq && d < best) {
                 best = d;
@@ -269,7 +285,7 @@ public class Watchman extends Monster {
     }
 
     private void tickServerActionFrames() {
-        if (!(level() instanceof ServerLevel serverLevel)) {
+        if (!(level() instanceof ServerLevel serverLevel) || !isAlive() || deathTime > 0) {
             return;
         }
         State state = getState();
@@ -303,10 +319,10 @@ public class Watchman extends Monster {
             double dx = victim.getX() - getX();
             double dz = victim.getZ() - getZ();
             if (dx * dx + dz * dz > 1e-6) {
-                victim.knockback(7.5, kx, kz);
-                Vec3 push = new Vec3(dx, 0, dz).normalize().scale(1.35);
+                victim.knockback(2.0, kx, kz);
+                Vec3 push = new Vec3(dx, 0, dz).normalize().scale(0.6);
                 victim.addDeltaMovement(push);
-                victim.addDeltaMovement(new Vec3(0.0, 0.22, 0.0));
+                victim.addDeltaMovement(new Vec3(0.0, 0.12, 0.0));
             }
         }
     }
@@ -358,7 +374,7 @@ public class Watchman extends Monster {
         }
     }
 
-    private void ensureClientAnimationState() {
+    public void ensureClientAnimationState() {
         switch (getState()) {
             case IDLE -> idleAnimationState.startIfStopped(tickCount);
             case WALK -> walkAnimationState.startIfStopped(tickCount);

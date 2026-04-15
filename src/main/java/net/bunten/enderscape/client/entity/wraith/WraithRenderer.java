@@ -28,6 +28,7 @@ public class WraithRenderer extends MobRenderer<Wraith, WraithRenderState, Wrait
 
     @Override
     public void extractRenderState(Wraith mob, WraithRenderState state, float partialTick) {
+        mob.ensureClientAnimationState();
         super.extractRenderState(mob, state, partialTick);
         state.idleAnimationState.copyFrom(mob.idleAnimationState);
         state.walkAnimationState.copyFrom(mob.walkAnimationState);

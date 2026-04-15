@@ -1,6 +1,6 @@
 {
   "spawn_range": 7,
-  "ticks_between_spawn": 25,
+  "ticks_between_spawn": 30,
   "simultaneous_mobs": 2,
   "simultaneous_mobs_added_per_player": 1.0,
   "loot_tables_to_eject": [

@@ -5,7 +5,6 @@ import net.bunten.enderscape.entity.ai.EnderscapeMemory;
 import net.bunten.enderscape.registry.*;
 import net.bunten.enderscape.registry.tag.EnderscapeBlockTags;
 import net.bunten.enderscape.registry.tag.EnderscapeItemTags;
-import net.bunten.enderscape.registry.tag.EnderscapePoiTags;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -184,12 +183,12 @@ public class Rustle extends Animal implements Bucketable, Shearable {
 
         if (isSleeping()) {
             getBrain().getMemory(EnderscapeMemory.RUSTLE_SLEEPING_SPOT).ifPresentOrElse(pos -> {
-                if (!level.getPoiManager().exists(pos, type -> type.is(EnderscapePoiTags.RUSTLE_SLEEPING_SPOT))) {
+                if (!level.getPoiManager().exists(pos, type -> type.is(EnderscapePoi.RUSTLE_SLEEPING_SPOT))) {
                     getBrain().eraseMemory(EnderscapeMemory.RUSTLE_SLEEPING_SPOT);
                     wakeUp();
                 }
 
-                if (isInWaterOrRain() || getDeltaMovement().lengthSqr() > 0.1 || !level.getPoiManager().exists(blockPosition(), type -> type.is(EnderscapePoiTags.RUSTLE_SLEEPING_SPOT))) wakeUp();
+                if (isInWaterOrRain() || getDeltaMovement().lengthSqr() > 0.1 || !level.getPoiManager().exists(blockPosition(), type -> type.is(EnderscapePoi.RUSTLE_SLEEPING_SPOT))) wakeUp();
             }, this::wakeUp);
         }
 

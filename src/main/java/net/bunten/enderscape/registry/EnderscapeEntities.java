@@ -59,8 +59,8 @@ public class EnderscapeEntities {
     );
 
     public static final EntityType<Watchman> WATCHMAN = register("watchman", EntityType.Builder.of(Watchman::new, MobCategory.MONSTER)
-            .sized(0.75F, 2.1F)
-            .eyeHeight(1.75F)
+            .sized(0.75F, 3.0F)
+            .eyeHeight(2.6F)
             .passengerAttachments(0.3F)
             .ridingOffset(0.1F)
             .clientTrackingRange(8)

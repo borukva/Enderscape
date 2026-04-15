@@ -15,7 +15,7 @@ public class WraithSlashAttackGoal extends Goal {
     private static final double SLASH_VERTICAL_TOLERANCE = 2.0;
     private static final int SLASH_DURATION_TICKS = 24;
     private static final int DAMAGE_AT_TICK = 8;
-    private static final int COOLDOWN_TICKS = 24;
+    private static final int COOLDOWN_TICKS = 80;
     private static final double ATTACK_FOLLOW_DISTANCE = 0.9;
 
     private final Wraith wraith;

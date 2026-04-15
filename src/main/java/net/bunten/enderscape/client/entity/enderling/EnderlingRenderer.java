@@ -27,6 +27,7 @@ public class EnderlingRenderer extends MobRenderer<Enderling, EnderlingRenderSta
 
     @Override
     public void extractRenderState(Enderling mob, EnderlingRenderState state, float partialTick) {
+        mob.ensureClientAnimationState();
         super.extractRenderState(mob, state, partialTick);
         state.idleAnimationState.copyFrom(mob.idleAnimationState);
         state.walkAnimationState.copyFrom(mob.walkAnimationState);

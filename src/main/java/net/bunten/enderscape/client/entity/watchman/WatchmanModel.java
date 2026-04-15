@@ -13,6 +13,7 @@ import net.minecraft.util.Mth;
 public class WatchmanModel extends EntityModel<WatchmanRenderState> {
 
 	private final ModelPart modelPart;
+	private final ModelPart hHead;
 
 	private final KeyframeAnimation idleAnimation;
 	private final KeyframeAnimation walkAnimation;
@@ -24,6 +25,7 @@ public class WatchmanModel extends EntityModel<WatchmanRenderState> {
 	public WatchmanModel(ModelPart root) {
 		super(root);
 		this.modelPart = root.getChild("watchman");
+		this.hHead = this.modelPart.getChild("body_root").getChild("body").getChild("torso").getChild("h_head");
 
 		idleAnimation = WatchmanAnimations.IDLE.bake(root);
 		walkAnimation = WatchmanAnimations.WALK.bake(root);
@@ -344,13 +346,14 @@ public class WatchmanModel extends EntityModel<WatchmanRenderState> {
 			return;
 		}
 
-		// Entity yaw/pitch are already applied by MobRenderer; do not add them again on the root bone or the body
-		// walks sideways relative to movement.
 
 		idleAnimation.apply(state.idleAnimationState, age);
 		walkAnimation.apply(state.walkAnimationState, age);
 		lanternSmackAnimation.apply(state.lanternSmackAnimationState, age);
 		summonWraithsAnimation.apply(state.summonWraithsAnimationState, age);
 		lanternPushAnimation.apply(state.lanternPushAnimationState, age);
+
+		hHead.xRot += (state.xRot * (Mth.PI / 180)) / 2;
+		hHead.yRot += (state.yRot * (Mth.PI / 180)) / 2;
 	}
 }

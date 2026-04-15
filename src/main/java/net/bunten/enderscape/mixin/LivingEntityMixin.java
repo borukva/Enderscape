@@ -6,11 +6,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.bunten.enderscape.EnderscapeConfig;
 import net.bunten.enderscape.entity.DashJumpUser;
 import net.bunten.enderscape.entity.EndTrialSpawnable;
-import net.bunten.enderscape.entity.enderling.Enderling;
-import net.bunten.enderscape.entity.watchman.Watchman;
-import net.bunten.enderscape.entity.wraith.Wraith;
 import net.bunten.enderscape.entity.magnia.MagniaMoveable;
-import net.bunten.enderscape.entity.magnia.MagniaProperties;
 import net.bunten.enderscape.item.component.EntityMagnet;
 import net.bunten.enderscape.particle.DashJumpShockwaveParticleOptions;
 import net.bunten.enderscape.registry.*;
@@ -24,12 +20,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -45,7 +37,6 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.jetbrains.annotations.Nullable;
 
 import static net.bunten.enderscape.registry.EnderscapeEnchantments.hasRebound;
 
@@ -65,74 +56,49 @@ public abstract class LivingEntityMixin extends Entity implements MagniaMoveable
     @Unique
     private final LivingEntity mob = (LivingEntity) (Object) this;
 
-    /** Wraith / Enderling / Watchman: vanilla armor durability loss scales with damage dealt — only ease that for players. */
-    @Unique
-    private static final float ENDERSCAPE$END_MOB_ARMOR_DURABILITY_MULTIPLIER = 0.5F;
+//    /** Wraith / Enderling / Watchman: vanilla armor durability loss scales with damage dealt — only ease that for players. */
+//    @Unique
+//    private static final float ENDERSCAPE$END_MOB_ARMOR_DURABILITY_MULTIPLIER = 0.5F;
 
     @Unique
     private int Enderscape$elytraGroundTicks = 0;
 
-    @WrapOperation(
-            method = "doHurtEquipment",
-            at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F")
-    )
-    private float Enderscape$scalePlayerArmorDurabilityLoss(float a, float b,
-        Operation<Float> original, DamageSource damageSource) {
-        float amount = original.call(a, b);
-        if (Enderscape$isEndMobAttacker(damageSource) && mob instanceof Player) {
-            return amount * ENDERSCAPE$END_MOB_ARMOR_DURABILITY_MULTIPLIER;
-        }
-        return amount;
-    }
-
-    @Unique
-    private static boolean Enderscape$isEndMobAttacker(DamageSource source) {
-        return Enderscape$isEndMobOrOwnedByEndMob(source.getDirectEntity())
-                || Enderscape$isEndMobOrOwnedByEndMob(source.getEntity());
-    }
-
-    @Unique
-    private static boolean Enderscape$isEndMobOrOwnedByEndMob(@Nullable Entity e) {
-        if (e == null) {
-            return false;
-        }
-        if (e instanceof Wraith || e instanceof Enderling || e instanceof Watchman) {
-            return true;
-        }
-        if (e instanceof Projectile projectile) {
-            return Enderscape$isEndMobOrOwnedByEndMob(projectile.getOwner());
-        }
-        if (e instanceof AreaEffectCloud cloud) {
-            Entity owner = cloud.getOwner();
-            return owner instanceof Wraith || owner instanceof Enderling || owner instanceof Watchman;
-        }
-        return false;
-    }
-
-    @Unique
-    @Override
-    public MagniaProperties enderscape$createMagniaProperties() {
-        return new MagniaProperties(
-                entity -> true,
-                entity -> entity.getType().is(EnderscapeEntityTags.AFFECTED_BY_MAGNIA) ? 0.05F : 0.01F * MagniaMoveable.getMagnetismFactor(entity),
-                entity -> entity.getType().is(EnderscapeEntityTags.AFFECTED_BY_MAGNIA) ? 0.05F : 0.02F * MagniaMoveable.getMagnetismFactor(entity),
-                DEFAULT_MAGNIA_PREDICATE,
-                entity -> {
-                    if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
-                        AttributeInstance gravity = living.getAttribute(Attributes.GRAVITY);
-                        if (!gravity.hasModifier(MAGNIA_GRAVITY_MODIFIER.id())) gravity.addTransientModifier(MAGNIA_GRAVITY_MODIFIER);
-                    }
-                    entity.fallDistance = 0;
-                },
-                entity -> {
-                    if (entity instanceof LivingEntity living && !(entity instanceof Player)) {
-                        AttributeInstance gravity = living.getAttribute(Attributes.GRAVITY);
-                        if (gravity.hasModifier(MAGNIA_GRAVITY_MODIFIER.id())) gravity.removeModifier(MAGNIA_GRAVITY_MODIFIER);
-                    }
-                    entity.fallDistance = 0;
-                }
-        );
-    }
+//    @WrapOperation(
+//            method = "doHurtEquipment",
+//            at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F")
+//    )
+//    private float Enderscape$scalePlayerArmorDurabilityLoss(float a, float b,
+//        Operation<Float> original, DamageSource damageSource) {
+//        float amount = original.call(a, b);
+//        if (Enderscape$isEndMobAttacker(damageSource) && mob instanceof Player) {
+//            return amount * ENDERSCAPE$END_MOB_ARMOR_DURABILITY_MULTIPLIER;
+//        }
+//        return amount;
+//    }
+//
+//    @Unique
+//    private static boolean Enderscape$isEndMobAttacker(DamageSource source) {
+//        return Enderscape$isEndMobOrOwnedByEndMob(source.getDirectEntity())
+//                || Enderscape$isEndMobOrOwnedByEndMob(source.getEntity());
+//    }
+//
+//    @Unique
+//    private static boolean Enderscape$isEndMobOrOwnedByEndMob(@Nullable Entity e) {
+//        if (e == null) {
+//            return false;
+//        }
+//        if (e instanceof Wraith || e instanceof Enderling || e instanceof Watchman) {
+//            return true;
+//        }
+//        if (e instanceof Projectile projectile) {
+//            return Enderscape$isEndMobOrOwnedByEndMob(projectile.getOwner());
+//        }
+//        if (e instanceof AreaEffectCloud cloud) {
+//            Entity owner = cloud.getOwner();
+//            return owner instanceof Wraith || owner instanceof Enderling || owner instanceof Watchman;
+//        }
+//        return false;
+//    }
 
     @Unique
     private static final EntityDataAccessor<Integer> MAGNIA_COOLDOWN_DATA = SynchedEntityData.defineId(LivingEntity.class, EntityDataSerializers.INT);

@@ -114,7 +114,7 @@ public class EnderscapeEntityLootProvider extends SimpleFabricLootTableProvider 
                         LootItem.lootTableItem(NEBULITE_SHARDS)
                                 .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                                 .apply(EnchantedCountIncreaseFunction.lootingMultiplier(lookup.get(), UniformGenerator.between(0, 1)))
-                                .when(LootItemRandomChanceCondition.randomChance(0.2F))
+                                .when(LootItemRandomChanceCondition.randomChance(0.07F))
                 )
                 .when(LootItemKilledByPlayerCondition.killedByPlayer());
     }

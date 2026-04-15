@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import net.bunten.enderscape.entity.ai.EnderscapeMemory;
 import net.bunten.enderscape.entity.rustle.RustleAI;
-import net.bunten.enderscape.registry.tag.EnderscapePoiTags;
+import net.bunten.enderscape.registry.EnderscapePoi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
@@ -39,7 +39,7 @@ public class RustleNearestSleepingSpotSensor extends Sensor<Mob> {
     @Override
     protected void doTick(ServerLevel level, Mob mob) {
         Set<Pair<Holder<PoiType>, BlockPos>> set = level.getPoiManager().findAllWithType(
-                holder -> holder.is(EnderscapePoiTags.RUSTLE_SLEEPING_SPOT), pos -> RustleAI.HAS_STURDY_SURFACE.test(level, pos), mob.blockPosition(), 48, PoiManager.Occupancy.ANY)
+                holder -> holder.is(EnderscapePoi.RUSTLE_SLEEPING_SPOT), pos -> RustleAI.HAS_STURDY_SURFACE.test(level, pos), mob.blockPosition(), 48, PoiManager.Occupancy.ANY)
                 .collect(Collectors.toSet()
         );
 

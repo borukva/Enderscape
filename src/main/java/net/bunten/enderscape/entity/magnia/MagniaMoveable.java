@@ -11,9 +11,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -35,7 +40,80 @@ public interface MagniaMoveable {
         }
     }
 
-    MagniaProperties enderscape$createMagniaProperties();
+    static MagniaProperties createLivingMagniaProperties() {
+        return new MagniaProperties(
+                entity -> true,
+                entity -> entity.getType().is(EnderscapeEntityTags.AFFECTED_BY_MAGNIA) ? 0.05F : 0.01F * getMagnetismFactor(entity),
+                entity -> entity.getType().is(EnderscapeEntityTags.AFFECTED_BY_MAGNIA) ? 0.05F : 0.02F * getMagnetismFactor(entity),
+                DEFAULT_MAGNIA_PREDICATE,
+                entity -> {
+                    if (entity instanceof LivingEntity le && !(entity instanceof Player)) {
+                        AttributeInstance gravity = le.getAttribute(Attributes.GRAVITY);
+                        if (!gravity.hasModifier(MAGNIA_GRAVITY_MODIFIER.id())) gravity.addTransientModifier(MAGNIA_GRAVITY_MODIFIER);
+                    }
+                    entity.fallDistance = 0;
+                },
+                entity -> {
+                    if (entity instanceof LivingEntity le && !(entity instanceof Player)) {
+                        AttributeInstance gravity = le.getAttribute(Attributes.GRAVITY);
+                        if (gravity.hasModifier(MAGNIA_GRAVITY_MODIFIER.id())) gravity.removeModifier(MAGNIA_GRAVITY_MODIFIER);
+                    }
+                    entity.fallDistance = 0;
+                }
+        );
+    }
+
+    static MagniaProperties createItemMagniaProperties(ItemEntity itemEntity) {
+        return new MagniaProperties(
+                entity -> false,
+                entity -> 0.6F,
+                entity -> 0.8F,
+                entity -> true,
+                entity -> {
+                    itemEntity.setPickUpDelay(20);
+                    itemEntity.setNoGravity(true);
+                },
+                entity -> entity.setNoGravity(false)
+        );
+    }
+
+    static MagniaProperties createExperienceOrbMagniaProperties(ExperienceOrb experienceOrb) {
+        return new MagniaProperties(
+                entity -> false,
+                entity -> 0.6F,
+                entity -> 0.8F,
+                entity -> true,
+                entity -> experienceOrb.setNoGravity(true),
+                entity -> entity.setNoGravity(false)
+        );
+    }
+
+    static MagniaProperties createMinecartMagniaProperties() {
+        return new MagniaProperties(
+                entity -> true,
+                entity -> 0.6F,
+                entity -> 0.2F,
+                DEFAULT_MAGNIA_PREDICATE,
+                entity -> entity.setNoGravity(true),
+                entity -> entity.setNoGravity(false)
+        );
+    }
+
+    default MagniaProperties enderscape$createMagniaProperties() {
+        if ((Object)this instanceof LivingEntity) {
+            return createLivingMagniaProperties();
+        }
+        if ((Object)this instanceof ItemEntity itemEntity) {
+            return createItemMagniaProperties(itemEntity);
+        }
+        if ((Object)this instanceof ExperienceOrb experienceOrb) {
+            return createExperienceOrbMagniaProperties(experienceOrb);
+        }
+        if ((Object)this instanceof AbstractMinecart) {
+            return createMinecartMagniaProperties();
+        }
+        throw new UnsupportedOperationException("Missing MagniaProperties implementation for " + this.getClass().getName());
+    }
 
     @Nullable
     static MagniaProperties getMagniaProperties(Entity entity) {

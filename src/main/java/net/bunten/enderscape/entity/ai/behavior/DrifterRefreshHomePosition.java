@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.bunten.enderscape.entity.ai.EnderscapeMemory;
 import net.bunten.enderscape.entity.drifter.Drifter;
 import net.bunten.enderscape.entity.drifter.DrifterAI;
-import net.bunten.enderscape.registry.tag.EnderscapePoiTags;
+import net.bunten.enderscape.registry.EnderscapePoi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -44,7 +44,7 @@ public class DrifterRefreshHomePosition extends Behavior<Drifter> {
     }
 
     protected List<BlockPos> findPossibleHomes(ServerLevel level, Drifter mob) {
-        Stream<PoiRecord> stream = level.getPoiManager().getInRange(holder -> holder.is(EnderscapePoiTags.DRIFTER_HOME), mob.blockPosition(), MAX_HOME_SEARCH_DISTANCE, Occupancy.ANY);
+        Stream<PoiRecord> stream = level.getPoiManager().getInRange(holder -> holder.is(EnderscapePoi.DRIFTER_HOME), mob.blockPosition(), MAX_HOME_SEARCH_DISTANCE, Occupancy.ANY);
         return stream.map(PoiRecord::getPos).collect(Collectors.toList());
     }
 

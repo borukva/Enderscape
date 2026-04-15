@@ -44,7 +44,7 @@ public class WraithRetreatGoal extends Goal {
             double z = wraith.getZ() + away.z;
             wraith.getMoveControl().setWantedPosition(x, y, z, 0.95);
             wraith.resetComboWindow();
-            wraith.setAttackCooldown(Math.max(wraith.getAttackCooldown(), 18));
+            wraith.setAttackCooldown(Math.max(wraith.getAttackCooldown(), 60));
         }
     }
 

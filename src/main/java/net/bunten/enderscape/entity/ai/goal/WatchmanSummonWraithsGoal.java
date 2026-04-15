@@ -10,6 +10,8 @@ import java.util.EnumSet;
 
 public class WatchmanSummonWraithsGoal extends Goal {
 
+    private static final int SUMMON_COOLDOWN_TICKS = 20 * 60 * 3;
+
     private final Watchman watchman;
 
     public WatchmanSummonWraithsGoal(Watchman watchman) {
@@ -46,7 +48,7 @@ public class WatchmanSummonWraithsGoal extends Goal {
         }
         watchman.startActionState(Watchman.State.SUMMON_WRAITHS, Watchman.SUMMON_DURATION_TICKS);
         watchman.setAttackCooldown(120);
-        watchman.setSummonCooldown(1000);
+        watchman.setSummonCooldown(SUMMON_COOLDOWN_TICKS);
         watchman.playSound(EnderscapeEntitySounds.WATCHMAN_SUMMON_WRAITHS, 1.2F, watchman.randomPitch());
     }
 
