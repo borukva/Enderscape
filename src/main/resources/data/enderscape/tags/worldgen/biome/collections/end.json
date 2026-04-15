@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_end",
+    {
+      "id": "#enderscape:enderscape_biomes",
+      "required": false
+    }
+  ]
+}

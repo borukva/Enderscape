@@ -50,7 +50,7 @@
         },
         {
           "type": "minecraft:loot_table",
-          "value": "borukva:artefacts",
+          "value": "borukva:artifacts",
           "weight": 2
         },
         {

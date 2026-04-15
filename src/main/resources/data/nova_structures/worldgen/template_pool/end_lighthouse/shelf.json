@@ -28,7 +28,8 @@
 				"projection": "rigid",
 				"processors": "minecraft:empty"
 			}
-		},{
+		},
+		{
 			"weight": 2,
 			"element": {
 				"element_type": "minecraft:single_pool_element",

@@ -14,17 +14,12 @@
       ]
     },
     {
-      "rolls": 1,
+      "rolls": 2,
       "entries": [
         {
           "type": "minecraft:loot_table",
           "value": "enderscape:end_city/vault/reward_rare",
           "weight": 3
-        },
-        {
-          "type": "minecraft:loot_table",
-          "value": "enderscape:end_city/vault/reward_common",
-          "weight": 1
         }
       ]
     },

@@ -1,15 +1,14 @@
 {
   "placement": {
     "type": "minecraft:random_spread",
-    "salt": 79584390,
-    "frequency": 0.25,
-    "separation": 10,
+    "salt": 435656543,
+    "separation": 22,
     "spacing": 70,
     "spread_type": "triangular"
   },
   "structures": [
     {
-      "structure": "nova_structures:end_ship",
+      "structure": "enderscape:end_lighthouse",
       "weight": 1
     }
   ]
