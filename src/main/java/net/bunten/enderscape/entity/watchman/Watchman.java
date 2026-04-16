@@ -181,7 +181,7 @@ public class Watchman extends Monster {
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 15)
-                .add(Attributes.ATTACK_DAMAGE, 8)
+                .add(Attributes.ATTACK_DAMAGE, 11)
                 .add(Attributes.ATTACK_KNOCKBACK, 3.5)
                 .add(Attributes.MOVEMENT_SPEED, 0.34)
                 .add(Attributes.FOLLOW_RANGE, 40);

@@ -8,7 +8,7 @@ import java.util.EnumSet;
 
 public class EnderlingChaseGoal extends Goal {
     /** Stop moving when this close; slash goal uses a slightly larger range so attacks start near melee. */
-    private static final double STOP_DISTANCE_SQ = 1.15 * 1.15;
+    private static final double STOP_DISTANCE_SQ = 2.0 * 2.0;
     private static final double CHASE_SPEED = 1.28;
     private static final double MOVING_THRESHOLD_SQ = 1.0E-5;
 

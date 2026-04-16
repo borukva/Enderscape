@@ -9,10 +9,10 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import java.util.EnumSet;
 
 public class EnderlingSlashAttackGoal extends Goal {
-    /** Small extra window so adjacent-height targets do not deadlock chase/attack transitions. */
-    private static final double START_RANGE_BUFFER = 0.35;
+    /** Extra window so chase stop distance and slash start range stay aligned (no idle ring). */
+    private static final double START_RANGE_BUFFER = 0.55;
     /** Horizontal reach for the damage frame during slash (start range still uses {@link #getAttackReachSqr}). */
-    private static final double SLASH_DAMAGE_HORIZONTAL_REACH = 3.0;
+    private static final double SLASH_DAMAGE_HORIZONTAL_REACH = 5.0;
     private static final double VERTICAL_TOLERANCE = 2.0;
     private static final int SLASH_DURATION_TICKS = 30;
     private static final int DAMAGE_AT_TICK = 10;
@@ -109,7 +109,7 @@ public class EnderlingSlashAttackGoal extends Goal {
     private double getAttackReachSqr(LivingEntity target) {
         double selfWidth = enderling.getBbWidth();
         double targetWidth = target.getBbWidth();
-        double reach = 1.35 + (selfWidth + targetWidth) * 0.5;
+        double reach = 2.45 + (selfWidth + targetWidth) * 0.5;
         return reach * reach;
     }
 
