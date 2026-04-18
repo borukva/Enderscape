@@ -1,5 +1,5 @@
 {
-	"name": "nova_structures:end_castle/start",
+	"name": "nova_structures:end_ships/boat",
 	"fallback": "minecraft:empty",
 	"elements": [
 		{

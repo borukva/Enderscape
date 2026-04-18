@@ -11,11 +11,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "borukva-food:cooked_hoglin_meat",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
           "name": "borukva-food:beef_salad",
           "weight": 2
         },
@@ -32,11 +27,6 @@
         {
           "type": "minecraft:item",
           "name": "borukva-food:cooked_beef_barbecue",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "name": "borukva-food:fungus_stew",
           "weight": 2
         },
         {

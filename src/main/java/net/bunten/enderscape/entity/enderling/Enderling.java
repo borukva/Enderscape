@@ -1,9 +1,14 @@
 package net.bunten.enderscape.entity.enderling;
 
 import io.netty.buffer.ByteBuf;
+import net.bunten.enderscape.entity.MonsterTeleportFeedback;
 import net.bunten.enderscape.entity.TeleportDodgeMechanics;
+import net.bunten.enderscape.entity.ai.HomeAnchoredMob;
+import net.bunten.enderscape.entity.ai.MobPlayerAggroSound;
+import net.bunten.enderscape.entity.ai.SpawnHomeAnchor;
 import net.bunten.enderscape.entity.ai.goal.EnderlingChaseGoal;
 import net.bunten.enderscape.entity.ai.goal.EnderlingSlashAttackGoal;
+import net.bunten.enderscape.entity.ai.goal.StayNearSpawnGoal;
 import net.bunten.enderscape.registry.EnderscapeEntities;
 import net.bunten.enderscape.registry.EnderscapeEntitySounds;
 import net.bunten.enderscape.registry.tag.EnderscapeBlockTags;
@@ -21,6 +26,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AnimationState;
@@ -29,6 +35,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -38,8 +45,9 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -48,9 +56,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("resource")
-public class Enderling extends Monster {
+public class Enderling extends Monster implements HomeAnchoredMob {
     private static final EntityDataAccessor<State> DATA_STATE = SynchedEntityData.defineId(Enderling.class, EnderscapeEntities.ENDERLING_STATE);
-    private static final double AGGRO_TELEPORT_TRIGGER_DISTANCE = 14.0;
+    private static final double AGGRO_TELEPORT_TRIGGER_DISTANCE = 6.0;
     private static final double AGGRO_TELEPORT_TRIGGER_DISTANCE_SQR = AGGRO_TELEPORT_TRIGGER_DISTANCE * AGGRO_TELEPORT_TRIGGER_DISTANCE;
     private static final int AGGRO_TELEPORT_ATTEMPTS = 20;
     private static final int AGGRO_TELEPORT_COOLDOWN_TICKS = 30;
@@ -64,16 +72,18 @@ public class Enderling extends Monster {
     public final AnimationState leftAttackAnimationState = new AnimationState();
 
     private int teleportCooldown;
+    /** Cooldown for catch-up teleports toward the current target; separate from dodge {@link #teleportCooldown}. */
+    private int catchUpTeleportCooldown;
     /** Consecutive successful hurt-dodge teleports without a dodge cooldown being applied. */
     private int consecutiveDodgeTeleports;
     private int attackCooldown;
     private int attackAnimationTicks;
     private boolean useRightAttack = true;
+    private final SpawnHomeAnchor spawnHome = new SpawnHomeAnchor(this);
 
     public Enderling(EntityType<? extends Enderling> type, Level level) {
         super(type, level);
-        xpReward = 12;
-        setCanPickUpLoot(true);
+        xpReward = 22;
     }
 
     public void setTeleportCooldown(int ticks) {
@@ -137,9 +147,66 @@ public class Enderling extends Monster {
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 15)
-                .add(Attributes.ATTACK_DAMAGE, 8)
+                .add(Attributes.ATTACK_DAMAGE, 6)
                 .add(Attributes.MOVEMENT_SPEED, 0.3)
                 .add(Attributes.FOLLOW_RANGE, 32);
+    }
+
+    @Override
+    public void ensureSpawnHomeCaptured() {
+        spawnHome.ensureSpawnHomeCaptured();
+    }
+
+    @Override
+    public BlockPos getSpawnHomeBlock() {
+        return spawnHome.getSpawnHomeBlock();
+    }
+
+    @Override
+    public void pathTowardSpawnHome(BlockPos home, double speed) {
+        getNavigation().moveTo(home.getX() + 0.5, home.getY(), home.getZ() + 0.5, speed);
+    }
+
+    @Override
+    public boolean tryTeleportNearSpawnHome(BlockPos home) {
+        if (level().isClientSide()) {
+            return false;
+        }
+        for (int i = 0; i < 20; i++) {
+            double angle = random.nextDouble() * Mth.TWO_PI;
+            double r = Mth.lerp(random.nextDouble(), 0.5, 2.5);
+            double x = home.getX() + 0.5 + Mth.cos((float) angle) * r;
+            double y = home.getY() + random.nextDouble() * 2.5;
+            double z = home.getZ() + 0.5 + Mth.sin((float) angle) * r;
+            if (teleport(x, y, z)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public double spawnHomePathSpeed() {
+        return 1.0;
+    }
+
+    @Override
+    @Nullable
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnGroupData) {
+        spawnHome.captureOnFinalizeSpawn();
+        return super.finalizeSpawn(level, difficulty, reason, spawnGroupData);
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        spawnHome.addSaveData(output);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        spawnHome.readSaveData(input);
     }
 
     @Override
@@ -148,9 +215,10 @@ public class Enderling extends Monster {
         goalSelector.addGoal(0, new net.minecraft.world.entity.ai.goal.FloatGoal(this));
         goalSelector.addGoal(3, new EnderlingSlashAttackGoal(this));
         goalSelector.addGoal(4, new EnderlingChaseGoal(this));
-        goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.85));
-        goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, net.minecraft.world.entity.player.Player.class, 8.0F, 1.0F));
+        goalSelector.addGoal(5, new StayNearSpawnGoal(this));
+        goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.85));
+        goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+        goalSelector.addGoal(10, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, net.minecraft.world.entity.player.Player.class, 8.0F, 1.0F));
         targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, net.minecraft.world.entity.player.Player.class, true));
     }
@@ -187,6 +255,7 @@ public class Enderling extends Monster {
     @Override
     public void tick() {
         super.tick();
+        spawnHome.tickCaptureIfNull();
         if (level().isClientSide()) {
             ensureClientAnimationState();
         }
@@ -198,6 +267,9 @@ public class Enderling extends Monster {
         }
         if (teleportCooldown > 0) {
             teleportCooldown--;
+        }
+        if (catchUpTeleportCooldown > 0) {
+            catchUpTeleportCooldown--;
         }
         if (attackCooldown > 0) {
             attackCooldown--;
@@ -278,7 +350,7 @@ public class Enderling extends Monster {
     private static final double DODGE_MIN_HORIZONTAL_MOVE = 1.4;
 
     private void tryTeleportToAggroTargetIfFar() {
-        if (teleportCooldown > 0 || isInAttackState()) {
+        if (catchUpTeleportCooldown > 0 || isInAttackState()) {
             return;
         }
 
@@ -295,7 +367,7 @@ public class Enderling extends Monster {
             double z = target.getZ() + Math.sin(angle) * radius;
 
             if (teleport(x, y, z)) {
-                setTeleportCooldown(AGGRO_TELEPORT_COOLDOWN_TICKS);
+                catchUpTeleportCooldown = AGGRO_TELEPORT_COOLDOWN_TICKS;
                 break;
             }
         }
@@ -341,7 +413,6 @@ public class Enderling extends Monster {
         }
 
         double x = anchor.getX() + Math.cos(angle) * radius;
-        double y = Mth.clamp(anchor.getY() + (random.nextDouble() - 0.5), anchor.getY() - 0.5, anchor.getY() + 0.75);
         double z = anchor.getZ() + Math.sin(angle) * radius;
 
         double hDistSq = Mth.square(x - getX()) + Mth.square(z - getZ());
@@ -349,7 +420,7 @@ public class Enderling extends Monster {
             return false;
         }
 
-        return teleport(x, y, z);
+        return teleportSameFeetBlockLayer(x, z, anchor);
     }
 
     @Override
@@ -373,6 +444,29 @@ public class Enderling extends Monster {
         chaseAnimationState.stop();
         rightAttackAnimationState.stop();
         leftAttackAnimationState.stop();
+    }
+
+    /**
+     * Dodge / same-layer: only the block column at the anchor's feet {@link Entity#blockPosition()} Y;
+     * does not scan downward (avoids dropping into caves or under bridges).
+     */
+    private boolean teleportSameFeetBlockLayer(double x, double z, Entity anchor) {
+        int feetBlockY = anchor.blockPosition().getY();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(Mth.floor(x), feetBlockY, Mth.floor(z));
+        Level level = level();
+        BlockPos below = mutable.below();
+        BlockState belowState = level.getBlockState(below);
+        BlockState feetState = level.getBlockState(mutable);
+        BlockState headState = level.getBlockState(mutable.above());
+        if (belowState.isCollisionShapeFullBlock(level, below)
+                && !belowState.getFluidState().is(FluidTags.WATER)
+                && !feetState.isCollisionShapeFullBlock(level, mutable)
+                && !headState.isCollisionShapeFullBlock(level, mutable.above())
+                && !feetState.getFluidState().is(FluidTags.WATER)
+                && !headState.getFluidState().is(FluidTags.WATER)) {
+            return tryTeleportTo(mutable.getX() + 0.5, mutable.getY(), mutable.getZ() + 0.5);
+        }
+        return false;
     }
 
     private boolean teleport(double x, double y, double z) {
@@ -409,11 +503,7 @@ public class Enderling extends Monster {
         Level level = level();
         if (level.noCollision(this) && !level.containsAnyLiquid(getBoundingBox())) {
             getNavigation().stop();
-            level.gameEvent(GameEvent.TELEPORT, oldPos, GameEvent.Context.of(this));
-            if (!isSilent()) {
-                level.playSound(null, xo, yo, zo, SoundEvents.ENDERMAN_TELEPORT, getSoundSource(), 1, 1);
-                playSound(SoundEvents.ENDERMAN_TELEPORT, 1, 1);
-            }
+            MonsterTeleportFeedback.playEnderStyleFrom(this, oldPos);
             return true;
         }
 
@@ -433,9 +523,7 @@ public class Enderling extends Monster {
     public void setTarget(@Nullable LivingEntity target) {
         LivingEntity previousTarget = getTarget();
         super.setTarget(target);
-        if (!level().isClientSide() && target instanceof net.minecraft.world.entity.player.Player && target != previousTarget) {
-            playAggroSound();
-        }
+        MobPlayerAggroSound.ifNewPlayerTarget(this, previousTarget, target, this::playAggroSound);
     }
 
     @Override
@@ -460,10 +548,7 @@ public class Enderling extends Monster {
 
     @Override
     protected boolean canReplaceCurrentItem(ItemStack candidate, ItemStack existing, EquipmentSlot slot) {
-        if (slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND) {
-            return true;
-        }
-        return super.canReplaceCurrentItem(candidate, existing, slot);
+        return false;
     }
 
     public static boolean canSpawn(EntityType<Enderling> ignoredType, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos, RandomSource random) {

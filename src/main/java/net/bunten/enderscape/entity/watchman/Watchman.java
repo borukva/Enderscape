@@ -1,6 +1,11 @@
 package net.bunten.enderscape.entity.watchman;
 
 import io.netty.buffer.ByteBuf;
+import net.bunten.enderscape.entity.MonsterTeleportFeedback;
+import net.bunten.enderscape.entity.ai.HomeAnchoredMob;
+import net.bunten.enderscape.entity.ai.MobPlayerAggroSound;
+import net.bunten.enderscape.entity.ai.SpawnHomeAnchor;
+import net.bunten.enderscape.entity.ai.goal.StayNearSpawnGoal;
 import net.bunten.enderscape.entity.ai.goal.WatchmanKeepDistanceGoal;
 import net.bunten.enderscape.entity.ai.goal.WatchmanLanternPushGoal;
 import net.bunten.enderscape.entity.ai.goal.WatchmanLanternSmackGoal;
@@ -24,12 +29,14 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -44,6 +51,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.DragonFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.bunten.enderscape.entity.wraith.Wraith;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +61,7 @@ import java.util.List;
 import java.util.function.IntFunction;
 
 @SuppressWarnings("resource")
-public class Watchman extends Monster {
+public class Watchman extends Monster implements HomeAnchoredMob {
 
     public static final int SMACK_DURATION_TICKS = 50;
     public static final int SMACK_HIT_REMAINING_TICKS = 34;
@@ -75,10 +84,11 @@ public class Watchman extends Monster {
     private int attackCooldown;
     private int summonCooldown;
     private int fireballCooldown;
+    private final SpawnHomeAnchor spawnHome = new SpawnHomeAnchor(this);
 
     public Watchman(EntityType<? extends Watchman> type, Level level) {
         super(type, level);
-        xpReward = 18;
+        xpReward = 25;
     }
 
     public int getAttackAnimationTicks() {
@@ -141,12 +151,67 @@ public class Watchman extends Monster {
     }
 
     @Override
+    public void ensureSpawnHomeCaptured() {
+        spawnHome.ensureSpawnHomeCaptured();
+    }
+
+    @Override
+    public BlockPos getSpawnHomeBlock() {
+        return spawnHome.getSpawnHomeBlock();
+    }
+
+    @Override
+    public void pathTowardSpawnHome(BlockPos home, double speed) {
+        getNavigation().moveTo(home.getX() + 0.5, home.getY(), home.getZ() + 0.5, speed);
+    }
+
+    @Override
+    public boolean tryTeleportNearSpawnHome(BlockPos home) {
+        if (level().isClientSide()) {
+            return false;
+        }
+        for (int i = 0; i < 20; i++) {
+            double ox = (random.nextDouble() - 0.5) * 5.0;
+            double oz = (random.nextDouble() - 0.5) * 5.0;
+            Vec3 from = position();
+            if (randomTeleport(home.getX() + 0.5 + ox, home.getY() + 1.0, home.getZ() + 0.5 + oz, false)) {
+                MonsterTeleportFeedback.playEnderStyleFrom(this, from);
+                getNavigation().stop();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public double spawnHomePathSpeed() {
+        return 0.75;
+    }
+
+    @Override
+    @Nullable
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnGroupData) {
+        spawnHome.captureOnFinalizeSpawn();
+        return super.finalizeSpawn(level, difficulty, reason, spawnGroupData);
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        spawnHome.addSaveData(output);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        spawnHome.readSaveData(input);
+    }
+
+    @Override
     public void setTarget(@Nullable LivingEntity target) {
         LivingEntity previousTarget = getTarget();
         super.setTarget(target);
-        if (!level().isClientSide() && target instanceof Player && target != previousTarget) {
-            playAggroSound();
-        }
+        MobPlayerAggroSound.ifNewPlayerTarget(this, previousTarget, target, this::playAggroSound);
     }
 
     public enum State {
@@ -180,7 +245,7 @@ public class Watchman extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 15)
+                .add(Attributes.MAX_HEALTH, 20)
                 .add(Attributes.ATTACK_DAMAGE, 11)
                 .add(Attributes.ATTACK_KNOCKBACK, 3.5)
                 .add(Attributes.MOVEMENT_SPEED, 0.34)
@@ -195,9 +260,10 @@ public class Watchman extends Monster {
         goalSelector.addGoal(2, new WatchmanKeepDistanceGoal(this));
         goalSelector.addGoal(3, new WatchmanSummonWraithsGoal(this));
         goalSelector.addGoal(4, new WatchmanLanternPushGoal(this));
-        goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.75));
-        goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 12.0F, 0.1F));
+        goalSelector.addGoal(5, new StayNearSpawnGoal(this));
+        goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.75));
+        goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+        goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 12.0F, 0.1F));
         targetSelector.addGoal(1, new HurtByTargetGoal(this));
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
@@ -205,6 +271,7 @@ public class Watchman extends Monster {
     @Override
     public void tick() {
         super.tick();
+        spawnHome.tickCaptureIfNull();
         if (level().isClientSide()) {
             ensureClientAnimationState();
             if (deathTime > 0) {

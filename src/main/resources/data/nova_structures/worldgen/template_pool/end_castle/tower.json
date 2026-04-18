@@ -1,5 +1,5 @@
 {
-	"name": "nova_structures:end_castle/start",
+	"name": "nova_structures:end_castle/tower",
 	"fallback": "nova_structures:end_castle/tower_fallback",
 	"elements": [
 		{

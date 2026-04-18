@@ -6,7 +6,12 @@ import net.bunten.enderscape.entity.ai.goal.WraithRetreatGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithSlashAttackGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithCombatFlyGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithSpinSlashGoal;
+import net.bunten.enderscape.entity.MonsterTeleportFeedback;
 import net.bunten.enderscape.entity.TeleportDodgeMechanics;
+import net.bunten.enderscape.entity.ai.HomeAnchoredMob;
+import net.bunten.enderscape.entity.ai.MobPlayerAggroSound;
+import net.bunten.enderscape.entity.ai.SpawnHomeAnchor;
+import net.bunten.enderscape.entity.ai.goal.StayNearSpawnGoal;
 import net.bunten.enderscape.entity.ai.goal.WraithTeleportGoal;
 import net.bunten.enderscape.registry.EnderscapeEntities;
 import net.bunten.enderscape.registry.EnderscapeEntitySounds;
@@ -25,6 +30,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AnimationState;
@@ -32,6 +38,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -40,8 +47,9 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
@@ -50,7 +58,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("resource")
-public class Wraith extends Monster {
+public class Wraith extends Monster implements HomeAnchoredMob {
 
     private static final EntityDataAccessor<State> DATA_STATE = SynchedEntityData.defineId(Wraith.class, EnderscapeEntities.WRAITH_STATE);
 
@@ -67,12 +75,13 @@ public class Wraith extends Monster {
     private int comboSlashHits;
     private boolean comboStrongAttack;
     private boolean shouldRetreat;
+    private final SpawnHomeAnchor spawnHome = new SpawnHomeAnchor(this);
 
     public Wraith(EntityType<? extends Wraith> type, Level level) {
         super(type, level);
         moveControl = new WraithMoveControl(this);
         setPathfindingMalus(PathType.WATER, -1);
-        xpReward = 15;
+        xpReward = 25;
     }
 
     public int getTeleportCooldown() {
@@ -159,12 +168,67 @@ public class Wraith extends Monster {
     }
 
     @Override
+    public void ensureSpawnHomeCaptured() {
+        spawnHome.ensureSpawnHomeCaptured();
+    }
+
+    @Override
+    public BlockPos getSpawnHomeBlock() {
+        return spawnHome.getSpawnHomeBlock();
+    }
+
+    @Override
+    public void pathTowardSpawnHome(BlockPos home, double speed) {
+        getMoveControl().setWantedPosition(home.getX() + 0.5, home.getY() + 0.75, home.getZ() + 0.5, speed);
+    }
+
+    @Override
+    public boolean tryTeleportNearSpawnHome(BlockPos home) {
+        if (level().isClientSide()) {
+            return false;
+        }
+        for (int i = 0; i < 24; i++) {
+            double angle = random.nextDouble() * Mth.TWO_PI;
+            double r = Mth.lerp(random.nextDouble(), 0.4, 2.0);
+            double x = home.getX() + 0.5 + Mth.cos((float) angle) * r;
+            double y = home.getY() + random.nextDouble() * 2.0 + 0.5;
+            double z = home.getZ() + 0.5 + Mth.sin((float) angle) * r;
+            if (teleport(x, y, z)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public double spawnHomePathSpeed() {
+        return 0.38;
+    }
+
+    @Override
+    @Nullable
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData spawnGroupData) {
+        spawnHome.captureOnFinalizeSpawn();
+        return super.finalizeSpawn(level, difficulty, reason, spawnGroupData);
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        spawnHome.addSaveData(output);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        spawnHome.readSaveData(input);
+    }
+
+    @Override
     public void setTarget(@Nullable LivingEntity target) {
         LivingEntity previousTarget = getTarget();
         super.setTarget(target);
-        if (!level().isClientSide() && target instanceof net.minecraft.world.entity.player.Player && target != previousTarget) {
-            playAggroSound();
-        }
+        MobPlayerAggroSound.ifNewPlayerTarget(this, previousTarget, target, this::playAggroSound);
     }
 
     public boolean doScaledHurtTarget(ServerLevel serverLevel, LivingEntity target, float damageMultiplier) {
@@ -185,6 +249,7 @@ public class Wraith extends Monster {
         goalSelector.addGoal(5, new WraithSpinSlashGoal(this));
         goalSelector.addGoal(5, new WraithSlashAttackGoal(this));
         goalSelector.addGoal(6, new WraithCombatFlyGoal(this));
+        goalSelector.addGoal(7, new StayNearSpawnGoal(this));
         goalSelector.addGoal(8, new WraithRandomFlyGoal(this));
         goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, net.minecraft.world.entity.player.Player.class, 8.0F, 1.0F));
         targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
@@ -223,7 +288,7 @@ public class Wraith extends Monster {
     public static AttributeSupplier.Builder createAttributes() {
         return createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 15)
-                .add(Attributes.ATTACK_DAMAGE, 12)
+                .add(Attributes.ATTACK_DAMAGE, 9)
                 .add(Attributes.MOVEMENT_SPEED, 0.25)
                 .add(Attributes.FOLLOW_RANGE, 32);
     }
@@ -239,6 +304,7 @@ public class Wraith extends Monster {
         super.tick();
         noPhysics = false;
         setNoGravity(true);
+        spawnHome.tickCaptureIfNull();
         if (level().isClientSide()) {
             ensureClientAnimationState();
         }
@@ -403,11 +469,7 @@ public class Wraith extends Monster {
         if (level.noCollision(this) && !level.containsAnyLiquid(getBoundingBox())) {
             getNavigation().stop();
             clearMoveTarget();
-            level.gameEvent(GameEvent.TELEPORT, oldPos, GameEvent.Context.of(this));
-            if (!isSilent()) {
-                level.playSound(null, xo, yo, zo, SoundEvents.ENDERMAN_TELEPORT, getSoundSource(), 1, 1);
-                playSound(SoundEvents.ENDERMAN_TELEPORT, 1, 1);
-            }
+            MonsterTeleportFeedback.playEnderStyleFrom(this, oldPos);
             return true;
         }
         // Revert if collision
