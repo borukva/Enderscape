@@ -61,6 +61,26 @@
         },
         {
           "type": "minecraft:item",
+          "name": "bartefacts:shulker_helmet",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:shulker_chestplate",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:shulker_leggings",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "bartefacts:shulker_boots",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
           "name": "bartefacts:invisible_helmet",
           "weight": 1
         },
